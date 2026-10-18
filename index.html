@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#7BA428">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Relatórios Alfa">
+<title>Relatórios Alfa</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+<meta name="application-name" content="Relatórios Alfa">
+<script>window.ALFA_API_URL = "https://script.google.com/macros/s/AKfycbwKI8VvKk_d7oj_QDJRz76VCpKiNqk9ScJGF-xglAEH_vwL3ZkDzF3O61VVTQLQ8Qye/exec"; window.ALFA_VERSAO = "202610180117";</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<style>
+/* Layout: app de uma coluna, cabeçalho com o logotipo, abas fixas e cartões; tudo pensado para o celular em campo. */
+:root {
+  --bg: #f3f5ee;
+  --surface: #ffffff;
+  --surface-2: #f8faf3;
+  --ink: #1e2318;
+  --muted: #5e6753;
+  --line: #d7ddca;
+  --green: #7BA428;
+  --green-deep: #5c8120;
+  --green-soft: #e9f1d8;
+  --brown: #6B5B45;
+  --brown-soft: #efe9e0;
+  --danger: #b9321f;
+  --danger-soft: #fbe7e3;
+  --warn: #8a6200;
+  --warn-soft: #fff4d6;
+  --ok: #2e7d32;
+  --ok-soft: #e3f2e4;
+  --shadow: 0 2px 10px rgba(40, 50, 20, 0.08);
+  --font: "Source Sans 3", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --radius: 12px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #151911; --surface: #1e241a; --surface-2: #232b1e; --ink: #edf0e5; --muted: #a8b29b;
+    --line: #36402c; --green: #9cc84e; --green-deep: #b7dd72; --green-soft: #2a3a1b;
+    --brown: #c3a886; --brown-soft: #2f2922; --danger: #ff8a75; --danger-soft: #3d1f1a;
+    --warn: #ffd166; --warn-soft: #3a3014; --ok: #8fd694; --ok-soft: #1d3320;
+    --shadow: 0 2px 10px rgba(0,0,0,0.35); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #151911; --surface: #1e241a; --surface-2: #232b1e; --ink: #edf0e5; --muted: #a8b29b;
+  --line: #36402c; --green: #9cc84e; --green-deep: #b7dd72; --green-soft: #2a3a1b;
+  --brown: #c3a886; --brown-soft: #2f2922; --danger: #ff8a75; --danger-soft: #3d1f1a;
+  --warn: #ffd166; --warn-soft: #3a3014; --ok: #8fd694; --ok-soft: #1d3320;
+  --shadow: 0 2px 10px rgba(0,0,0,0.35); color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 17px; line-height: 1.5; }
+img { max-width: 100%; }
+button, input, select, textarea { font-family: inherit; font-size: 17px; color: inherit; }
+h1, h2, h3 { margin: 0; line-height: 1.2; text-wrap: balance; }
+p { margin: 0; }
+.logo { display: block; height: auto; }
+
+/* LOGIN */
+#loginPage { min-height: 100%; display: flex; align-items: center; justify-content: center; padding: 24px 16px; background: linear-gradient(170deg, var(--green-soft) 0%, var(--bg) 55%, var(--brown-soft) 100%); }
+.login-box { background: var(--surface); width: 100%; max-width: 440px; padding: 36px 28px 28px; border-radius: 20px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 18px; }
+.login-box .logo { width: 230px; margin: 0 auto 4px; }
+.login-box h1 { font-size: 24px; font-weight: 700; text-align: center; color: var(--brown); }
+.login-box .sub { text-align: center; color: var(--muted); font-size: 15px; margin-top: -10px; }
+.hint { font-size: 14px; color: var(--muted); text-align: center; }
+
+/* CABEÇALHO E ABAS */
+#mainPage { display: none; min-height: 100%; }
+.header { background: var(--surface); border-bottom: 1px solid var(--line); padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.header .logo { height: 56px; width: auto; }
+.header-info { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.user-info { text-align: right; line-height: 1.2; min-width: 0; }
+.user-name { font-weight: 700; display: block; }
+.user-role { font-size: 13px; color: var(--muted); }
+.tabs { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); padding: 10px 16px 6px; display: flex; gap: 8px; }
+.tab-btn { flex: 1; border: 1px solid var(--line); background: var(--surface); color: var(--muted); border-radius: 999px; padding: 10px 8px; font-weight: 700; font-size: 15px; cursor: pointer; }
+.tab-btn.active { background: var(--green); border-color: var(--green); color: #fff; }
+.tab-btn:focus-visible, .btn:focus-visible { outline: 3px solid var(--green-deep); outline-offset: 2px; }
+.container { max-width: 980px; margin: 0 auto; padding: 8px 16px 48px; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* AVISOS */
+.banner { border-radius: 10px; padding: 10px 14px; font-size: 15px; margin: 8px 0 12px; display: none; }
+.banner.show { display: block; }
+.banner-warn { background: var(--warn-soft); color: var(--warn); }
+.banner-ok { background: var(--ok-soft); color: var(--ok); }
+.banner-err { background: var(--danger-soft); color: var(--danger); }
+.alert { position: fixed; left: 16px; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 50; padding: 14px 18px; border-radius: 12px; font-weight: 600; box-shadow: var(--shadow); display: none; }
+.alert.show { display: block; }
+.alert-success { background: var(--ok-soft); color: var(--ok); }
+.alert-error { background: var(--danger-soft); color: var(--danger); }
+
+/* FORMULÁRIO */
+.card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px; }
+.card h2 { font-size: 21px; font-weight: 700; color: var(--brown); margin-bottom: 14px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.form-row.full { grid-template-columns: 1fr; }
+.form-group { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.form-group label { font-weight: 600; font-size: 15px; }
+.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink); }
+.form-group textarea { resize: vertical; min-height: 96px; }
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px var(--green-soft); }
+.form-group .invalid { border-color: var(--danger) !important; background: var(--danger-soft); }
+.req { color: var(--danger); font-weight: 700; margin-left: 2px; }
+.opt { color: var(--muted); font-weight: 400; font-size: 13px; }
+.check { display: flex; align-items: center; gap: 10px; padding: 10px 0; }
+.check input { width: 22px; height: 22px; accent-color: var(--green); margin: 0; }
+.check label { font-weight: 500; }
+.sep { border: 0; border-top: 1px solid var(--line); margin: 18px 0; }
+.btn { border: none; border-radius: 10px; padding: 13px 18px; font-weight: 700; font-size: 16px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.btn-primary { background: var(--green); color: #fff; }
+.btn-primary:hover { background: var(--green-deep); }
+.btn-secondary { background: var(--brown-soft); color: var(--brown); }
+.btn-danger { background: var(--danger-soft); color: var(--danger); }
+.btn-small { padding: 9px 12px; font-size: 14px; }
+.btn[disabled] { opacity: 0.6; cursor: wait; }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.actions .btn { flex: 1; min-width: 160px; }
+.file-label { display: inline-flex; gap: 8px; align-items: center; padding: 12px 16px; border: 1.5px dashed var(--green); border-radius: 10px; color: var(--green-deep); font-weight: 700; cursor: pointer; background: var(--green-soft); }
+.file-label input { position: absolute; left: -9999px; }
+.thumbs { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+.thumb { position: relative; width: 92px; height: 92px; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); background: var(--surface-2); }
+.thumb img { width: 100%; height: 100%; object-fit: cover; }
+.thumb button { position: absolute; top: 4px; right: 4px; width: 26px; height: 26px; border-radius: 50%; border: none; background: rgba(0,0,0,0.6); color: #fff; font-weight: 700; cursor: pointer; line-height: 1; }
+.errors { display: none; background: var(--danger-soft); color: var(--danger); border-left: 5px solid var(--danger); border-radius: 10px; padding: 14px 16px; margin-top: 18px; }
+.errors.show { display: block; }
+.errors h3 { font-size: 17px; margin-bottom: 6px; }
+.errors ul { margin: 0; padding-left: 20px; }
+.preview { display: none; margin-top: 18px; background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; }
+.preview.show { display: block; }
+.preview h3 { color: var(--brown); font-size: 19px; margin-bottom: 12px; }
+.kv { display: grid; grid-template-columns: 150px 1fr; gap: 6px 14px; font-size: 16px; }
+.kv .k { color: var(--muted); font-weight: 600; }
+.kv .v { min-width: 0; overflow-wrap: anywhere; white-space: pre-wrap; }
+
+/* LISTAS */
+.filters { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px; align-items: end; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 14px; }
+.report { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px; display: flex; flex-direction: column; gap: 10px; border-top: 5px solid var(--green); }
+.report.c-viveiro { border-top-color: #4f9d4f; }
+.report.c-obra { border-top-color: var(--brown); }
+.report.c-ibitirama { border-top-color: #3b7ea1; }
+.report.c-escritorio { border-top-color: #8a7a2a; }
+.report .top { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
+.report .cat { font-weight: 700; color: var(--brown); }
+.report .when { font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.chip { font-size: 12px; font-weight: 700; padding: 4px 9px; border-radius: 999px; background: var(--green-soft); color: var(--green-deep); white-space: nowrap; }
+.chip.local { background: var(--warn-soft); color: var(--warn); }
+.report .who { font-size: 15px; font-weight: 600; }
+.report .body { font-size: 15px; color: var(--muted); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
+.report .row { display: flex; gap: 8px; margin-top: auto; }
+.report .row .btn { flex: 1; }
+.empty { grid-column: 1 / -1; text-align: center; padding: 48px 16px; color: var(--muted); }
+.empty h3 { font-size: 19px; margin-bottom: 6px; color: var(--ink); }
+.count { font-size: 14px; color: var(--muted); margin: 0 0 10px; }
+
+/* MODAL */
+.modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 100; padding: 16px; }
+.modal.show { display: flex; align-items: center; justify-content: center; }
+.modal-content { background: var(--surface); border-radius: 16px; width: 100%; max-width: 640px; max-height: 88vh; overflow-y: auto; padding: 22px; }
+.modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.modal-head h2 { font-size: 20px; color: var(--brown); }
+.close { border: none; background: var(--surface-2); width: 38px; height: 38px; border-radius: 50%; font-size: 22px; cursor: pointer; }
+.photos { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-top: 12px; }
+.photos img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 10px; border: 1px solid var(--line); }
+
+@media (max-width: 560px) {
+  .form-row { grid-template-columns: 1fr; }
+  .header .logo { height: 50px; }
+  .kv { grid-template-columns: 1fr; gap: 2px 0; }
+  .kv .k { margin-top: 8px; }
+  .user-role { display: none; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .report { transition: transform .15s ease; }
+  .report:hover { transform: translateY(-2px); }
+}
+</style>
+<style>
+.net { font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: var(--ok-soft); color: var(--ok); white-space: nowrap; }
+.net.off { background: var(--warn-soft); color: var(--warn); }
+.linklike { background: none; border: none; color: var(--green-deep); font-weight: 700; cursor: pointer; padding: 4px 0; font-size: 14px; text-decoration: underline; }
+.chip.pend { background: var(--warn-soft); color: var(--warn); }
+.toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+.toolbar a { color: var(--green-deep); font-weight: 700; }
+table.users { width: 100%; border-collapse: collapse; font-size: 15px; }
+table.users th, table.users td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+table.users th { color: var(--muted); font-size: 13px; text-transform: uppercase; letter-spacing: .04em; }
+.table-wrap { overflow-x: auto; }
+.spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading { text-align: center; color: var(--muted); padding: 24px; }
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div id="loginPage">
+  <div class="login-box">
+    <img class="logo" src="logo.png" alt="Alfa Proteção Ambiental">
+    <h1>Relatórios de Trabalho</h1>
+    <p class="sub">Registro diário das equipes de campo, viveiro, obra e escritório</p>
+    <div class="banner banner-err" id="loginError"></div>
+    <div class="form-group">
+      <label for="loginUser">Usuário</label>
+      <input type="text" id="loginUser" autocomplete="username" autocapitalize="none" placeholder="seu primeiro nome">
+    </div>
+    <div class="form-group">
+      <label for="loginPass">Senha</label>
+      <input type="password" id="loginPass" autocomplete="current-password" placeholder="sua senha">
+    </div>
+    <button class="btn btn-primary" id="btnLogin" onclick="handleLogin()">Entrar</button>
+    <p class="hint">Esqueceu a senha? Fale com o Michender ou a Michelly.</p>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="mainPage">
+  <div class="header">
+    <img class="logo" src="logo.png" alt="Alfa Proteção Ambiental">
+    <div class="header-info">
+      <div class="user-info">
+        <span class="user-name" id="currentUserName"></span>
+        <span class="user-role" id="currentUserRole"></span>
+        <button class="linklike" onclick="abrirSenha()">Trocar senha</button>
+      </div>
+      <button class="btn btn-secondary btn-small" onclick="handleLogout()">Sair</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="novo" onclick="switchTab('novo', this)">Novo</button>
+    <button class="tab-btn" data-tab="meus" onclick="switchTab('meus', this)">Meus relatórios</button>
+    <button class="tab-btn" id="adminTab" data-tab="admin" style="display:none" onclick="switchTab('admin', this)">Administração</button>
+  </div>
+
+  <div class="container">
+    <div class="banner banner-warn" id="filaBanner"></div>
+
+    <!-- NOVO -->
+    <div id="tab-novo" class="tab-content active">
+      <div class="card">
+        <h2>Novo relatório</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="reportDate">Data do trabalho <span class="req">*</span></label>
+            <input type="date" id="reportDate">
+          </div>
+          <div class="form-group">
+            <label for="reportCategory">Categoria <span class="req">*</span></label>
+            <select id="reportCategory" onchange="updateFormFields()">
+              <option value="">Selecione</option>
+              <option value="topografia">Topografia / Campo</option>
+              <option value="viveiro">Viveiro de Mudas</option>
+              <option value="obra">Obra</option>
+              <option value="ibitirama">Ibitirama e outros</option>
+              <option value="escritorio">Escritório</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="f-topografia" hidden>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="projetoNumero">Número do processo (ALFA XXXX) <span class="req">*</span></label>
+              <input type="text" id="projetoNumero" placeholder="ALFA 3753" autocapitalize="characters">
+            </div>
+          </div>
+          <div class="form-row full">
+            <div class="form-group">
+              <label for="acompanhantes">Cliente / Representante <span class="req">*</span></label>
+              <input type="text" id="acompanhantes" placeholder="Ex.: João Silva, representante do espólio">
+              <div class="check">
+                <input type="checkbox" id="ninguemAcompanhou" onchange="toggleAcompanhante()">
+                <label for="ninguemAcompanhou">Ninguém acompanhou</label>
+              </div>
+            </div>
+          </div>
+          <div class="form-row full">
+            <div class="form-group">
+              <label for="descricaoTrabalho">Descrição do trabalho do dia <span class="req">*</span></label>
+              <textarea id="descricaoTrabalho" placeholder="O que foi medido, equipamento usado, pontos coletados, dificuldades..."></textarea>
+            </div>
+          </div>
+          <div class="form-row full">
+            <div class="form-group">
+              <label for="necessidadesCompra">Necessidade de compras ou manutenção <span class="opt">(opcional)</span></label>
+              <textarea id="necessidadesCompra" placeholder="EPIs, insumos, baterias, manutenção de veículo..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div id="f-viveiro" hidden>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="localViveiro">Local do viveiro <span class="req">*</span></label>
+              <select id="localViveiro">
+                <option value="">Selecione</option>
+                <option value="São Miguel - Cambuí/MG">São Miguel - Cambuí/MG</option>
+                <option value="Consolação/MG">Consolação/MG</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Tirou mudas hoje? <span class="req">*</span></label>
+              <div class="check">
+                <input type="checkbox" id="tirouMudas" onchange="updateMudasField()">
+                <label for="tirouMudas">Sim, tirei mudas</label>
+              </div>
+              <div class="check">
+                <input type="checkbox" id="naoTirouMudas" onchange="updateMudasField(true)">
+                <label for="naoTirouMudas">Não tirei mudas</label>
+              </div>
+            </div>
+          </div>
+          <div class="form-row" id="quantidadeMudasField" hidden>
+            <div class="form-group">
+              <label for="quantidadeMudas">Quantidade de mudas <span class="req">*</span></label>
+              <input type="number" id="quantidadeMudas" min="1" inputmode="numeric" placeholder="0">
+            </div>
+          </div>
+          <div class="form-row full">
+            <div class="form-group">
+              <label for="observacoesViveiro">Observações e outros trabalhos (plantio, adubação, capina) <span class="opt">(opcional)</span></label>
+              <textarea id="observacoesViveiro"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div id="f-obra" hidden>
+          <div class="form-row full">
+            <div class="form-group">
+              <label for="localObra">Qual obra? <span class="req">*</span></label>
+              <input type="text" id="localObra" placeholder="Ex.: Casa do Michender">
+            </div>
+          </div>
+          <div class="form-row full">
+            <div class="form-group">
+              <label for="descricaoObra">O que foi feito hoje? <span class="req">*</span></label>
+              <textarea id="descricaoObra"></textarea>
+            </div>
+          </div>
+          <div class="form-row full">
+            <div class="form-group">
+              <label for="materiaisObra">Materiais que precisam ser comprados <span class="opt">(opcional)</span></label>
+              <textarea id="materiaisObra"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div id="f-ibitirama" hidden>
+          <div class="form-row full">
+            <div class="form-group">
+              <label for="localTrabalho">Onde foi feito o trabalho? <span class="req">*</span></label>
+              <input type="text" id="localTrabalho" placeholder="Ex.: Alto do Ibitirama, Lote 19">
+            </div>
+          </div>
+          <div class="form-row full">
+            <div class="form-group">
+              <label for="atividadeIbitirama">Atividade desenvolvida <span class="req">*</span></label>
+              <textarea id="atividadeIbitirama"></textarea>
+            </div>
+          </div>
+          <div class="form-row full">
+            <div class="form-group">
+              <label for="observacoesIbitirama">Observações complementares <span class="opt">(opcional)</span></label>
+              <textarea id="observacoesIbitirama"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div id="f-escritorio" hidden>
+          <div class="form-row full">
+            <div class="form-group">
+              <label for="descricaoEscritorio">Descrição do trabalho do dia <span class="req">*</span></label>
+              <textarea id="descricaoEscritorio" placeholder="Processos trabalhados, documentos elaborados, atendimentos, protocolos..."></textarea>
+            </div>
+          </div>
+          <div class="form-row full">
+            <div class="form-group">
+              <label for="infoEscritorio">Informações complementares <span class="req">*</span></label>
+              <textarea id="infoEscritorio" placeholder="Pendências, recados, o que ficou para amanhã..."></textarea>
+            </div>
+          </div>
+          <p class="hint" style="text-align:left">Escritório não registra horário aqui: o horário é o do ponto.</p>
+        </div>
+
+        <div id="f-horarios">
+          <hr class="sep">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="horaInicio">Hora de início <span class="req">*</span></label>
+              <input type="time" id="horaInicio">
+            </div>
+            <div class="form-group">
+              <label for="horaFim">Hora de término <span class="req">*</span></label>
+              <input type="time" id="horaFim">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row full">
+          <div class="form-group">
+            <label>Fotos do trabalho <span class="opt">(opcional, até 6)</span></label>
+            <label class="file-label" for="fotosInput">Adicionar fotos
+              <input type="file" id="fotosInput" multiple accept="image/*" onchange="handleFileSelect(event)">
+            </label>
+            <div class="thumbs" id="thumbs"></div>
+          </div>
+        </div>
+
+        <div class="errors" id="formErrors">
+          <h3>Faltou preencher</h3>
+          <ul id="formErrorsList"></ul>
+        </div>
+
+        <div class="preview" id="previewSection">
+          <h3>Confira antes de enviar</h3>
+          <div class="kv" id="previewContent"></div>
+          <div class="actions">
+            <button class="btn btn-primary" id="btnSubmit" onclick="submitReport()">Confirmar e enviar</button>
+            <button class="btn btn-secondary" onclick="editReport()">Voltar e editar</button>
+          </div>
+        </div>
+
+        <div class="actions" id="mainActions">
+          <button class="btn btn-primary" onclick="generatePreview()">Revisar relatório</button>
+          <button class="btn btn-secondary" onclick="clearForm()">Limpar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MEUS -->
+    <div id="tab-meus" class="tab-content">
+      <div class="filters">
+        <div class="form-group">
+          <label for="filterCategory">Categoria</label>
+          <select id="filterCategory" onchange="renderMine()">
+            <option value="">Todas</option>
+            <option value="topografia">Topografia / Campo</option>
+            <option value="viveiro">Viveiro de Mudas</option>
+            <option value="obra">Obra</option>
+            <option value="ibitirama">Ibitirama e outros</option>
+            <option value="escritorio">Escritório</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="filterMonth">Mês</label>
+          <input type="month" id="filterMonth" onchange="renderMine()">
+        </div>
+        <button class="btn btn-secondary" onclick="loadMine()">Atualizar</button>
+      </div>
+      <p class="count" id="mineCount"></p>
+      <div id="mineGrid" class="grid"></div>
+    </div>
+
+    <!-- ADMIN -->
+    <div id="tab-admin" class="tab-content">
+      <div class="banner banner-err" id="adminBanner"></div>
+      <div class="toolbar">
+        <a id="linkPlanilha" href="#" target="_blank" rel="noopener" hidden>Abrir a planilha no Google</a>
+      </div>
+      <div class="filters">
+        <div class="form-group">
+          <label for="adminFilterUser">Colaborador</label>
+          <select id="adminFilterUser" onchange="renderAdmin()"><option value="">Todos</option></select>
+        </div>
+        <div class="form-group">
+          <label for="adminFilterCategory">Categoria</label>
+          <select id="adminFilterCategory" onchange="renderAdmin()">
+            <option value="">Todas</option>
+            <option value="topografia">Topografia / Campo</option>
+            <option value="viveiro">Viveiro de Mudas</option>
+            <option value="obra">Obra</option>
+            <option value="ibitirama">Ibitirama e outros</option>
+            <option value="escritorio">Escritório</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="adminFilterFrom">De</label>
+          <input type="date" id="adminFilterFrom" onchange="renderAdmin()">
+        </div>
+        <div class="form-group">
+          <label for="adminFilterTo">Até</label>
+          <input type="date" id="adminFilterTo" onchange="renderAdmin()">
+        </div>
+        <button class="btn btn-secondary" onclick="loadAdmin()">Atualizar</button>
+        <button class="btn btn-primary" id="btnExport" onclick="exportCSV()">Exportar CSV</button>
+      </div>
+      <p class="count" id="adminCount"></p>
+      <div id="adminGrid" class="grid"></div>
+
+      <div class="card" style="margin-top:20px">
+        <h2>Colaboradores</h2>
+        <div class="table-wrap">
+          <table class="users">
+            <thead><tr><th>Usuário</th><th>Nome</th><th>Perfil</th><th>Ativo</th><th></th></tr></thead>
+            <tbody id="usersBody"><tr><td colspan="5" class="loading">Carregando...</td></tr></tbody>
+          </table>
+        </div>
+        <hr class="sep">
+        <h3 style="font-size:17px;color:var(--brown);margin-bottom:10px" id="userFormTitle">Novo colaborador</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="uUsuario">Usuário (login) <span class="req">*</span></label>
+            <input type="text" id="uUsuario" autocapitalize="none" placeholder="ex.: joao">
+          </div>
+          <div class="form-group">
+            <label for="uNome">Nome <span class="req">*</span></label>
+            <input type="text" id="uNome" placeholder="Como aparece nos relatórios">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="uPerfil">Perfil</label>
+            <select id="uPerfil"><option value="user">Colaborador</option><option value="admin">Administrador</option></select>
+          </div>
+          <div class="form-group">
+            <label for="uSenha">Senha <span class="opt" id="uSenhaHint">(obrigatória para novo)</span></label>
+            <input type="password" id="uSenha" autocomplete="new-password" placeholder="mínimo 6 caracteres">
+          </div>
+        </div>
+        <div class="check"><input type="checkbox" id="uAtivo" checked><label for="uAtivo">Ativo</label></div>
+        <p class="hint" style="text-align:left">Toda senha definida aqui é provisória: no próximo acesso o colaborador é obrigado a cadastrar a senha definitiva.</p>
+        <div class="errors" id="userErrors"><h3>Não foi possível salvar</h3><ul id="userErrorsList"></ul></div>
+        <div class="banner banner-ok" id="provisoriaResultado"></div>
+        <div class="actions">
+          <button class="btn btn-primary" id="btnSalvarUsuario" onclick="salvarUsuario()">Salvar colaborador</button>
+          <button class="btn btn-secondary" id="btnGerarProvisoria" onclick="gerarProvisoria()" hidden>Gerar senha provisória</button>
+          <button class="btn btn-secondary" onclick="limparFormUsuario()">Limpar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="alert alert-success" id="successAlert"></div>
+<div class="alert alert-error" id="errorAlert"></div>
+
+<div id="detailsModal" class="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-content">
+    <div class="modal-head">
+      <h2>Relatório</h2>
+      <button class="close" onclick="closeModal()" aria-label="Fechar">&times;</button>
+    </div>
+    <div class="kv" id="modalBody"></div>
+    <div class="photos" id="modalPhotos"></div>
+  </div>
+</div>
+
+<div id="provisoriaModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-head"><h2>Cadastre sua nova senha</h2></div>
+    <p style="margin-bottom:14px;color:var(--muted);font-size:15px">Você entrou com uma senha provisória. Escolha agora a sua senha definitiva para continuar.</p>
+    <div class="form-group" style="margin-bottom:12px" id="provAtualGrupo" hidden><label for="provAtual">Senha provisória</label><input type="password" id="provAtual" autocomplete="current-password"></div>
+    <div class="form-group" style="margin-bottom:12px"><label for="provNova">Nova senha</label><input type="password" id="provNova" autocomplete="new-password" placeholder="mínimo 6 caracteres"></div>
+    <div class="form-group" style="margin-bottom:12px"><label for="provNova2">Repita a nova senha</label><input type="password" id="provNova2" autocomplete="new-password"></div>
+    <div class="banner banner-err" id="provErro"></div>
+    <div class="actions"><button class="btn btn-primary" id="btnProv" onclick="salvarSenhaDefinitiva()">Salvar e continuar</button><button class="btn btn-secondary" onclick="handleLogout()">Sair</button></div>
+  </div>
+</div>
+
+<div id="senhaModal" class="modal" onclick="if(event.target===this)fecharSenha()">
+  <div class="modal-content">
+    <div class="modal-head">
+      <h2>Trocar senha</h2>
+      <button class="close" onclick="fecharSenha()" aria-label="Fechar">&times;</button>
+    </div>
+    <div class="form-group" style="margin-bottom:12px"><label for="senhaAtual">Senha atual</label><input type="password" id="senhaAtual" autocomplete="current-password"></div>
+    <div class="form-group" style="margin-bottom:12px"><label for="senhaNova">Nova senha</label><input type="password" id="senhaNova" autocomplete="new-password" placeholder="mínimo 6 caracteres"></div>
+    <div class="form-group" style="margin-bottom:12px"><label for="senhaNova2">Repita a nova senha</label><input type="password" id="senhaNova2" autocomplete="new-password"></div>
+    <div class="banner banner-err" id="senhaErro"></div>
+    <div class="actions"><button class="btn btn-primary" id="btnSenha" onclick="trocarSenha()">Salvar nova senha</button></div>
+  </div>
+</div>
+
+<script>
+// ============ CONSTANTES ============
+const CATS = { topografia: 'Topografia / Campo', viveiro: 'Viveiro de Mudas', obra: 'Obra', ibitirama: 'Ibitirama e outros', escritorio: 'Escritório' };
+const JANELA_DIAS = { admin: 180, user: 40 };
+const MAX_FOTOS = 6;
+
+let currentUser = null;   // { usuario, nome, perfil, token, planilhaUrl }
+let fotosPendentes = [];
+let mineReports = [];
+let adminReports = [];
+let usuarios = [];
+let pendingDelete = null;
+let enviandoFila = false;
+let senhaUsadaNoLogin = '';
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const pad = n => String(n).padStart(2, '0');
+const isoLocal = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+const hoje = () => isoLocal(new Date());
+const fmtData = s => s ? String(s).slice(0, 10).split('-').reverse().join('/') : '';
+const lsGet = k => { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } };
+const lsSet = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+const lsDel = k => { try { localStorage.removeItem(k); } catch (e) {} };
+
+// ============ CHAMADAS AO SERVIDOR ============
+// Dois modos: (a) página servida pelo próprio Apps Script: google.script.run;
+// (b) app hospedado fora (Firebase Hosting): POST JSON direto ao /exec, sem cookies do Google (credentials: omit),
+//     o que evita o erro do Google com várias contas logadas.
+const API_URL = (typeof window !== 'undefined' && window.ALFA_API_URL) ? String(window.ALFA_API_URL) : '';
+function tratarResposta(resp, resolve, reject) {
+  if (resp && resp.ok) return resolve(resp);
+  const e = new Error(resp && resp.erro ? resp.erro : 'Erro no servidor.');
+  e.codigo = resp && resp.codigo ? resp.codigo : 'erro';
+  if (e.codigo === 'sessao') { sessaoExpirada(); }
+  if (e.codigo === 'trocar_senha') { abrirProvisoria(); }
+  reject(e);
+}
+function rpc(acao, dados) {
+  return new Promise((resolve, reject) => {
+    const req = { acao, token: currentUser ? currentUser.token : lsGet('alfa_token'), dados: dados || {} };
+    const falhaRede = err => { const e = new Error('Sem conexão com o servidor. ' + (err && err.message ? err.message : '')); e.codigo = 'rede'; reject(e); };
+    if (API_URL) {
+      fetch(API_URL, { method: 'POST', body: JSON.stringify(req), headers: { 'Content-Type': 'text/plain;charset=utf-8' }, credentials: 'omit', redirect: 'follow', cache: 'no-store' })
+        .then(r => r.json())
+        .then(resp => tratarResposta(resp, resolve, reject))
+        .catch(falhaRede);
+      return;
+    }
+    if (!window.google || !google.script || !google.script.run) { const e = new Error('Sem conexão com o servidor.'); e.codigo = 'rede'; return reject(e); }
+    google.script.run
+      .withSuccessHandler(resp => tratarResposta(resp, resolve, reject))
+      .withFailureHandler(falhaRede)
+      .api(req);
+  });
+}
+function sessaoExpirada() {
+  if (!currentUser) return;
+  currentUser = null; lsDel('alfa_token'); lsDel('alfa_user');
+  $('loginPage').style.display = 'flex'; $('mainPage').style.display = 'none';
+  showBanner('loginError', 'Sua sessão expirou. Entre de novo.');
+}
+
+// ============ LOGIN ============
+async function handleLogin() {
+  const usuario = $('loginUser').value.trim().toLowerCase();
+  const senha = $('loginPass').value;
+  if (!usuario || !senha) { showBanner('loginError', 'Informe usuário e senha.'); return; }
+  const btn = $('btnLogin'); btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Entrando';
+  try {
+    const r = await rpc('login', { usuario, senha });
+    currentUser = { usuario: r.usuario, nome: r.nome, perfil: r.perfil, token: r.token, planilhaUrl: r.planilhaUrl || '', trocarSenha: !!r.trocarSenha };
+    lsSet('alfa_token', r.token); lsSet('alfa_user', { usuario: r.usuario, nome: r.nome, perfil: r.perfil, planilhaUrl: r.planilhaUrl || '' });
+    $('loginError').classList.remove('show'); $('loginPass').value = '';
+    senhaUsadaNoLogin = r.trocarSenha ? senha : '';
+    showMainPage();
+  } catch (e) {
+    showBanner('loginError', e.message);
+  } finally { btn.disabled = false; btn.textContent = 'Entrar'; }
+}
+async function handleLogout() {
+  try { await rpc('sair'); } catch (e) {}
+  currentUser = null; lsDel('alfa_token'); lsDel('alfa_user');
+  $('loginPage').style.display = 'flex'; $('mainPage').style.display = 'none';
+  $('loginUser').value = ''; $('loginPass').value = '';
+  clearForm();
+}
+function showMainPage() {
+  $('loginPage').style.display = 'none'; $('mainPage').style.display = 'block';
+  $('currentUserName').textContent = currentUser.nome;
+  $('currentUserRole').textContent = currentUser.perfil === 'admin' ? 'Administrador' : 'Colaborador';
+  $('adminTab').style.display = currentUser.perfil === 'admin' ? 'block' : 'none';
+  const lp = $('linkPlanilha');
+  if (currentUser.perfil === 'admin' && currentUser.planilhaUrl) { lp.href = currentUser.planilhaUrl; lp.hidden = false; } else lp.hidden = true;
+  $('reportDate').value = hoje();
+  switchTab('novo');
+  atualizarFilaBanner();
+  if (currentUser.trocarSenha) { abrirProvisoria(); return; }
+  loadMine();
+  enviarFila();
+}
+
+// ============ SENHA PROVISÓRIA (obrigatória) ============
+function abrirProvisoria() {
+  if (!currentUser) return;
+  currentUser.trocarSenha = true;
+  $('provAtualGrupo').hidden = !!senhaUsadaNoLogin;
+  ['provAtual', 'provNova', 'provNova2'].forEach(i => $(i).value = '');
+  $('provErro').classList.remove('show');
+  $('provisoriaModal').classList.add('show');
+  setTimeout(() => $(senhaUsadaNoLogin ? 'provNova' : 'provAtual').focus(), 50);
+}
+async function salvarSenhaDefinitiva() {
+  const atual = senhaUsadaNoLogin || $('provAtual').value, n = $('provNova').value, n2 = $('provNova2').value;
+  if (!atual) return showBanner('provErro', 'Informe a senha provisória que você recebeu.');
+  if (n.length < 6) return showBanner('provErro', 'A nova senha precisa ter pelo menos 6 caracteres.');
+  if (n !== n2) return showBanner('provErro', 'As duas senhas novas não conferem.');
+  if (n === atual) return showBanner('provErro', 'A nova senha precisa ser diferente da provisória.');
+  const btn = $('btnProv'); btn.disabled = true;
+  try {
+    await rpc('alterarSenha', { senhaAtual: atual, novaSenha: n });
+    currentUser.trocarSenha = false; senhaUsadaNoLogin = '';
+    $('provisoriaModal').classList.remove('show');
+    showAlert('successAlert', 'Senha cadastrada. Bom trabalho!');
+    loadMine(); enviarFila();
+  } catch (e) { showBanner('provErro', e.message); }
+  finally { btn.disabled = false; }
+}
+
+// ============ FORMULÁRIO ============
+function updateFormFields() {
+  const c = $('reportCategory').value;
+  ['topografia', 'viveiro', 'obra', 'ibitirama', 'escritorio'].forEach(k => { $('f-' + k).hidden = (c !== k); });
+  $('f-horarios').hidden = (c === 'escritorio');
+  clearErrors();
+}
+function toggleAcompanhante() {
+  const off = $('ninguemAcompanhou').checked;
+  const inp = $('acompanhantes'); inp.disabled = off; if (off) { inp.value = ''; inp.classList.remove('invalid'); }
+}
+function updateMudasField(fromNao) {
+  if (fromNao && $('naoTirouMudas').checked) $('tirouMudas').checked = false;
+  if (!fromNao && $('tirouMudas').checked) $('naoTirouMudas').checked = false;
+  $('quantidadeMudasField').hidden = !$('tirouMudas').checked;
+}
+function handleFileSelect(ev) {
+  const files = Array.from(ev.target.files || []);
+  ev.target.value = '';
+  const vagas = MAX_FOTOS - fotosPendentes.length;
+  if (files.length > vagas) showAlert('errorAlert', 'Limite de ' + MAX_FOTOS + ' fotos por relatório.');
+  files.slice(0, Math.max(0, vagas)).forEach(f => comprimirFoto(f).then(dataUrl => { fotosPendentes.push({ nome: f.name, dataUrl }); renderThumbs(); }).catch(() => showAlert('errorAlert', 'Não consegui ler a foto ' + f.name + '.')));
+}
+function comprimirFoto(file) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const max = 1280; let w = img.width, h = img.height;
+      if (w > max || h > max) { const r = Math.min(max / w, max / h); w = Math.round(w * r); h = Math.round(h * r); }
+      const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+      const ctx = cv.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h); ctx.drawImage(img, 0, 0, w, h);
+      let q = 0.75, out = cv.toDataURL('image/jpeg', q);
+      while (out.length > 190 * 1024 && q > 0.35) { q -= 0.1; out = cv.toDataURL('image/jpeg', q); }
+      resolve(out);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('imagem')); };
+    img.src = url;
+  });
+}
+function renderThumbs() {
+  $('thumbs').innerHTML = fotosPendentes.map((f, i) => '<div class="thumb"><img src="' + f.dataUrl + '" alt="' + esc(f.nome) + '"><button type="button" onclick="removerFoto(' + i + ')" aria-label="Remover">&times;</button></div>').join('');
+}
+function removerFoto(i) { fotosPendentes.splice(i, 1); renderThumbs(); }
+
+function clearErrors() {
+  $('formErrors').classList.remove('show');
+  document.querySelectorAll('#tab-novo .invalid').forEach(el => el.classList.remove('invalid'));
+}
+function mostrarErros(lista) {
+  $('formErrorsList').innerHTML = lista.map(e => '<li>' + esc(e) + '</li>').join('');
+  $('formErrors').classList.add('show');
+  $('formErrors').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+function validateForm() {
+  clearErrors();
+  const erros = [];
+  const c = $('reportCategory').value;
+  const need = (id, msg) => { const el = $(id); if (!el.value.trim()) { erros.push(msg); el.classList.add('invalid'); } };
+  need('reportDate', 'Data do trabalho');
+  if ($('reportDate').value && $('reportDate').value > hoje()) { erros.push('A data não pode ser no futuro'); $('reportDate').classList.add('invalid'); }
+  need('reportCategory', 'Categoria');
+  if (c === 'topografia') {
+    need('projetoNumero', 'Número do processo (ALFA XXXX)');
+    if (!$('ninguemAcompanhou').checked) need('acompanhantes', 'Cliente / Representante (ou marque "Ninguém acompanhou")');
+    need('descricaoTrabalho', 'Descrição do trabalho do dia');
+  } else if (c === 'viveiro') {
+    need('localViveiro', 'Local do viveiro');
+    if (!$('tirouMudas').checked && !$('naoTirouMudas').checked) erros.push('Informe se tirou mudas ou não');
+    if ($('tirouMudas').checked) { const q = Number($('quantidadeMudas').value); if (!$('quantidadeMudas').value || isNaN(q) || q <= 0) { erros.push('Quantidade de mudas (maior que zero)'); $('quantidadeMudas').classList.add('invalid'); } }
+  } else if (c === 'obra') {
+    need('localObra', 'Qual obra');
+    need('descricaoObra', 'O que foi feito hoje');
+  } else if (c === 'ibitirama') {
+    need('localTrabalho', 'Onde foi feito o trabalho');
+    need('atividadeIbitirama', 'Atividade desenvolvida');
+  } else if (c === 'escritorio') {
+    need('descricaoEscritorio', 'Descrição do trabalho do dia');
+    need('infoEscritorio', 'Informações complementares');
+  }
+  if (c && c !== 'escritorio') {
+    need('horaInicio', 'Hora de início');
+    need('horaFim', 'Hora de término');
+    const hi = $('horaInicio').value, hf = $('horaFim').value;
+    if (hi && hf && hf <= hi) { erros.push('A hora de término precisa ser depois da hora de início'); $('horaFim').classList.add('invalid'); }
+  }
+  if (erros.length) { mostrarErros(erros); return false; }
+  return true;
+}
+
+function gatherReport() {
+  const c = $('reportCategory').value;
+  const v = id => $(id).value.trim();
+  const r = { data: $('reportDate').value, categoria: c, horaInicio: '', horaFim: '', campos: {} };
+  if (c !== 'escritorio') { r.horaInicio = $('horaInicio').value; r.horaFim = $('horaFim').value; }
+  if (c === 'topografia') r.campos = { projeto: v('projetoNumero').toUpperCase(), cliente: $('ninguemAcompanhou').checked ? 'Ninguém acompanhou' : v('acompanhantes'), descricao: v('descricaoTrabalho'), necessidades: v('necessidadesCompra') };
+  if (c === 'viveiro') r.campos = { local: v('localViveiro'), tirou: $('tirouMudas').checked, quantidade: $('tirouMudas').checked ? Number(v('quantidadeMudas') || 0) : 0, observacoes: v('observacoesViveiro') };
+  if (c === 'obra') r.campos = { local: v('localObra'), descricao: v('descricaoObra'), materiais: v('materiaisObra') };
+  if (c === 'ibitirama') r.campos = { local: v('localTrabalho'), atividade: v('atividadeIbitirama'), observacoes: v('observacoesIbitirama') };
+  if (c === 'escritorio') r.campos = { descricao: v('descricaoEscritorio'), complementares: v('infoEscritorio') };
+  return r;
+}
+// Converte um relatório do formulário (campos) no formato que a lista usa (colunas), para prévia e fila.
+function normalizar(r, extra) {
+  const f = r.campos || {};
+  const o = Object.assign({ data: r.data, categoria: r.categoria, horaInicio: r.horaInicio || '', horaFim: r.horaFim || '', processoLocal: '', cliente: '', descricao: '', observacoes: '', mudas: '', fotos: 0, campos: f, nome: currentUser ? currentUser.nome : '', usuario: currentUser ? currentUser.usuario : '' }, extra || {});
+  switch (r.categoria) {
+    case 'topografia': o.processoLocal = f.projeto; o.cliente = f.cliente; o.descricao = f.descricao; o.observacoes = f.necessidades; break;
+    case 'viveiro': o.processoLocal = f.local; o.descricao = f.tirou ? 'Tirou ' + f.quantidade + ' mudas' : 'Não tirou mudas'; o.mudas = f.tirou ? f.quantidade : 0; o.observacoes = f.observacoes; break;
+    case 'obra': o.processoLocal = f.local; o.descricao = f.descricao; o.observacoes = f.materiais; break;
+    case 'ibitirama': o.processoLocal = f.local; o.descricao = f.atividade; o.observacoes = f.observacoes; break;
+    case 'escritorio': o.processoLocal = 'Escritório'; o.descricao = f.descricao; o.observacoes = f.complementares; break;
+  }
+  return o;
+}
+function linhasKV(r) {
+  const rows = [['Colaborador', r.nome], ['Data', fmtData(r.data)], ['Categoria', CATS[r.categoria] || r.categoria]];
+  if (r.categoria !== 'escritorio') rows.push(['Horário', (r.horaInicio || '') + ' às ' + (r.horaFim || '')]);
+  if (r.categoria === 'topografia') rows.push(['Processo', r.processoLocal], ['Cliente / Repr.', r.cliente]);
+  else if (r.categoria !== 'escritorio') rows.push(['Local', r.processoLocal]);
+  rows.push([r.categoria === 'viveiro' ? 'Mudas' : 'Descrição', r.descricao]);
+  if (r.observacoes) rows.push([r.categoria === 'topografia' ? 'Compras / manutenção' : (r.categoria === 'obra' ? 'Materiais' : (r.categoria === 'escritorio' ? 'Complementares' : 'Observações')), r.observacoes]);
+  rows.push(['Fotos', (r.fotos || 0) + ' foto(s)']);
+  if (r.criadoEm) rows.push(['Registrado em', String(r.criadoEm).replace('T', ' ').slice(0, 16)]);
+  if (r.pendente) rows.push(['Situação', 'Pendente de envio (guardado neste aparelho)']);
+  return rows.map(([k, v]) => '<div class="k">' + esc(k) + '</div><div class="v">' + esc(v) + '</div>').join('');
+}
+function generatePreview() {
+  if (!validateForm()) return;
+  $('previewContent').innerHTML = linhasKV(normalizar(gatherReport(), { fotos: fotosPendentes.length }));
+  $('previewSection').classList.add('show');
+  $('mainActions').hidden = true;
+  $('previewSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+function editReport() { $('previewSection').classList.remove('show'); $('mainActions').hidden = false; }
+
+async function submitReport() {
+  if (!validateForm()) { editReport(); return; }
+  const btn = $('btnSubmit'); btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Enviando';
+  const relatorio = gatherReport();
+  const fotos = fotosPendentes.map(f => f.dataUrl);
+  try {
+    await rpc('criar', { relatorio, fotos });
+    showAlert('successAlert', 'Relatório enviado.');
+    clearForm();
+    await loadMine();
+    switchTab('meus');
+  } catch (e) {
+    if (e.codigo === 'rede') {
+      guardarNaFila(relatorio, fotos);
+      showAlert('errorAlert', 'Sem conexão agora. O relatório ficou guardado neste aparelho e será enviado quando a conexão voltar.');
+      clearForm(); renderMine(); switchTab('meus');
+    } else if (e.codigo === 'validacao') {
+      editReport(); mostrarErros([e.message]);
+    } else {
+      showAlert('errorAlert', 'Não foi possível salvar: ' + e.message);
+    }
+  } finally { btn.disabled = false; btn.textContent = 'Confirmar e enviar'; }
+}
+function clearForm() {
+  ['reportCategory', 'projetoNumero', 'acompanhantes', 'descricaoTrabalho', 'necessidadesCompra', 'localViveiro', 'quantidadeMudas', 'observacoesViveiro', 'localObra', 'descricaoObra', 'materiaisObra', 'localTrabalho', 'atividadeIbitirama', 'observacoesIbitirama', 'descricaoEscritorio', 'infoEscritorio', 'horaInicio', 'horaFim'].forEach(id => { $(id).value = ''; });
+  ['ninguemAcompanhou', 'tirouMudas', 'naoTirouMudas'].forEach(id => { $(id).checked = false; });
+  $('acompanhantes').disabled = false;
+  fotosPendentes = []; renderThumbs();
+  $('reportDate').value = hoje();
+  updateFormFields(); updateMudasField(); editReport(); clearErrors();
+}
+
+// ============ FILA OFFLINE ============
+function fila() { return (lsGet('alfa_fila') || []).filter(x => x && x.relatorio); }
+function guardarNaFila(relatorio, fotos) {
+  const f = fila();
+  f.push({ idLocal: 'L' + Date.now(), usuario: currentUser.usuario, relatorio, fotos, criadoEm: new Date().toISOString() });
+  lsSet('alfa_fila', f); atualizarFilaBanner();
+}
+function removerDaFila(idLocal) { lsSet('alfa_fila', fila().filter(x => x.idLocal !== idLocal)); atualizarFilaBanner(); }
+function atualizarFilaBanner() {
+  const n = currentUser ? fila().filter(x => x.usuario === currentUser.usuario).length : 0;
+  const b = $('filaBanner');
+  if (!n) { b.classList.remove('show'); return; }
+  b.innerHTML = n + ' relatório(s) aguardando envio. <button class="btn btn-primary btn-small" onclick="enviarFila(true)">Enviar agora</button>';
+  b.classList.add('show');
+}
+async function enviarFila(manual) {
+  if (enviandoFila || !currentUser) return;
+  const meus = fila().filter(x => x.usuario === currentUser.usuario);
+  if (!meus.length) return;
+  enviandoFila = true;
+  let ok = 0, falha = null;
+  for (const item of meus) {
+    try { await rpc('criar', { relatorio: item.relatorio, fotos: item.fotos || [] }); removerDaFila(item.idLocal); ok++; }
+    catch (e) { falha = e; if (e.codigo === 'validacao') { removerDaFila(item.idLocal); showAlert('errorAlert', 'Um relatório pendente foi descartado pelo servidor: ' + e.message); } else break; }
+  }
+  enviandoFila = false;
+  if (ok) { showAlert('successAlert', ok + ' relatório(s) pendente(s) enviado(s).'); loadMine(); }
+  else if (manual && falha) showAlert('errorAlert', falha.message);
+}
+window.addEventListener('online', () => enviarFila());
+
+// ============ MEUS RELATÓRIOS ============
+async function loadMine() {
+  $('mineGrid').innerHTML = '<div class="empty loading">Carregando...</div>';
+  try { const r = await rpc('meus'); mineReports = r.relatorios || []; }
+  catch (e) { mineReports = []; showAlert('errorAlert', e.message); }
+  renderMine();
+}
+function renderMine() {
+  const cat = $('filterCategory').value, mes = $('filterMonth').value;
+  const pend = currentUser ? fila().filter(x => x.usuario === currentUser.usuario).map(x => normalizar(x.relatorio, { id: x.idLocal, pendente: true, fotos: (x.fotos || []).length, criadoEm: x.criadoEm })) : [];
+  let list = pend.concat(mineReports);
+  if (cat) list = list.filter(r => r.categoria === cat);
+  if (mes) list = list.filter(r => (r.data || '').startsWith(mes));
+  list.sort((a, b) => (b.data + b.criadoEm).localeCompare(a.data + a.criadoEm));
+  $('mineCount').textContent = list.length ? list.length + ' relatório(s) nos últimos ' + JANELA_DIAS[currentUser.perfil] + ' dias' : '';
+  renderGrid(list, 'mineGrid', 'Nenhum relatório ainda', 'Lance o primeiro na aba "Novo".');
+}
+
+// ============ ADMINISTRAÇÃO ============
+async function loadAdmin() {
+  if (!currentUser || currentUser.perfil !== 'admin') return;
+  const ab = $('adminBanner'); ab.classList.remove('show');
+  $('adminGrid').innerHTML = '<div class="empty loading">Carregando...</div>';
+  try {
+    const r = await rpc('todos'); adminReports = r.relatorios || [];
+    const sel = $('adminFilterUser'); const atual = sel.value;
+    const nomes = [...new Map(adminReports.map(x => [x.usuario, x.nome])).entries()].sort((a, b) => a[1].localeCompare(b[1]));
+    sel.innerHTML = '<option value="">Todos</option>' + nomes.map(([u, n]) => '<option value="' + esc(u) + '">' + esc(n) + '</option>').join('');
+    sel.value = atual;
+  } catch (e) { adminReports = []; ab.textContent = e.message; ab.classList.add('show'); }
+  renderAdmin();
+  loadUsuarios();
+}
+function adminFiltros() { return { usuario: $('adminFilterUser').value, categoria: $('adminFilterCategory').value, de: $('adminFilterFrom').value, ate: $('adminFilterTo').value }; }
+function adminFiltrados() {
+  const f = adminFiltros();
+  let list = adminReports.slice();
+  if (f.usuario) list = list.filter(r => r.usuario === f.usuario);
+  if (f.categoria) list = list.filter(r => r.categoria === f.categoria);
+  if (f.de) list = list.filter(r => r.data >= f.de);
+  if (f.ate) list = list.filter(r => r.data <= f.ate);
+  return list;
+}
+function renderAdmin() {
+  const list = adminFiltrados();
+  $('adminCount').textContent = list.length ? list.length + ' relatório(s) nos últimos ' + JANELA_DIAS.admin + ' dias' : '';
+  renderGrid(list, 'adminGrid', 'Nenhum relatório', 'Ajuste os filtros ou clique em Atualizar.');
+}
+function renderGrid(list, gridId, t1, t2) {
+  const g = $(gridId);
+  if (!list.length) { g.innerHTML = '<div class="empty"><h3>' + esc(t1) + '</h3><p>' + esc(t2) + '</p></div>'; return; }
+  g.innerHTML = list.map(r => {
+    const chip = r.pendente ? '<span class="chip pend">Aguardando envio</span>' : '<span class="chip">' + (r.fotos ? r.fotos + ' foto(s)' : 'Enviado') + '</span>';
+    return '<div class="report c-' + esc(r.categoria) + '">' +
+      '<div class="top"><div><div class="cat">' + esc(CATS[r.categoria] || r.categoria) + '</div><div class="when">' + esc(fmtData(r.data)) + (r.horaInicio ? ' · ' + esc(r.horaInicio) + ' às ' + esc(r.horaFim) : '') + '</div></div>' + chip + '</div>' +
+      (gridId === 'adminGrid' ? '<div class="who">' + esc(r.nome) + '</div>' : '') +
+      '<div class="body">' + esc(r.processoLocal ? r.processoLocal + ' · ' : '') + esc(r.descricao) + '</div>' +
+      '<div class="row"><button class="btn btn-primary btn-small" onclick="viewReport(\'' + esc(r.id) + '\', \'' + gridId + '\')">Ver</button>' +
+      '<button class="btn btn-danger btn-small" onclick="deleteReport(\'' + esc(r.id) + '\', \'' + gridId + '\', this)">Excluir</button></div></div>';
+  }).join('');
+}
+function acharRelatorio(id, gridId) {
+  if (gridId === 'adminGrid') return adminReports.find(r => r.id === id) || null;
+  const p = fila().find(x => x.idLocal === id);
+  if (p) return normalizar(p.relatorio, { id: p.idLocal, pendente: true, fotos: (p.fotos || []).length, criadoEm: p.criadoEm, _fotosLocais: p.fotos || [] });
+  return mineReports.find(r => r.id === id) || null;
+}
+async function viewReport(id, gridId) {
+  const r = acharRelatorio(id, gridId); if (!r) return;
+  $('modalBody').innerHTML = linhasKV(r);
+  const ph = $('modalPhotos'); ph.innerHTML = '';
+  $('detailsModal').classList.add('show');
+  if (r.pendente) { ph.innerHTML = (r._fotosLocais || []).map(d => '<img src="' + d + '" alt="foto">').join(''); return; }
+  if (r.fotos > 0) {
+    ph.innerHTML = '<p class="hint">Carregando fotos...</p>';
+    try {
+      const resp = await rpc('fotos', { id: r.id });
+      ph.innerHTML = (resp.fotos || []).map(f => '<a href="' + esc(f.url || f.dataUrl) + '" target="_blank" rel="noopener"><img src="' + f.dataUrl + '" alt="' + esc(f.nome) + '"></a>').join('') || '<p class="hint">Fotos não encontradas.</p>';
+    } catch (e) { ph.innerHTML = '<p class="hint">Não consegui carregar as fotos: ' + esc(e.message) + '</p>'; }
+  }
+}
+function closeModal() { $('detailsModal').classList.remove('show'); }
+async function deleteReport(id, gridId, btn) {
+  const key = gridId + '|' + id;
+  if (pendingDelete !== key) {
+    pendingDelete = key;
+    btn.textContent = 'Confirmar exclusão';
+    setTimeout(() => { if (pendingDelete === key) { pendingDelete = null; if (btn.isConnected) btn.textContent = 'Excluir'; } }, 5000);
+    return;
+  }
+  pendingDelete = null;
+  const r = acharRelatorio(id, gridId); if (!r) return;
+  btn.disabled = true;
+  try {
+    if (r.pendente) { removerDaFila(id); }
+    else { await rpc('excluir', { id }); adminReports = adminReports.filter(x => x.id !== id); mineReports = mineReports.filter(x => x.id !== id); }
+    showAlert('successAlert', 'Relatório excluído.');
+    renderMine(); if (currentUser.perfil === 'admin') renderAdmin();
+  } catch (e) { btn.disabled = false; btn.textContent = 'Excluir'; showAlert('errorAlert', 'Não foi possível excluir: ' + e.message); }
+}
+
+// ============ EXPORTAÇÃO CSV ============
+async function exportCSV() {
+  const btn = $('btnExport'); btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Gerando';
+  try {
+    const r = await rpc('csv', { filtros: adminFiltros() });
+    // 1) tenta baixar direto; 2) sempre oferece o link do arquivo gerado no Drive
+    let direto = false;
+    try {
+      const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([r.csv], { type: 'text/csv;charset=utf-8' })); a.download = r.nome; document.body.appendChild(a); a.click(); a.remove(); direto = true;
+    } catch (e) {}
+    const ab = $('adminBanner');
+    ab.innerHTML = 'Arquivo <strong>' + esc(r.nome) + '</strong> (' + r.linhas + ' linhas) salvo na pasta Relatórios Alfa / Exportações do seu Drive. <a href="' + esc(r.url) + '" target="_blank" rel="noopener">Baixar o CSV</a>';
+    ab.className = 'banner banner-ok show';
+    showAlert('successAlert', direto ? 'CSV gerado.' : 'CSV gerado. Use o link para baixar.');
+  } catch (e) { showAlert('errorAlert', e.message); }
+  finally { btn.disabled = false; btn.textContent = 'Exportar CSV'; }
+}
+
+// ============ COLABORADORES ============
+async function loadUsuarios() {
+  try { const r = await rpc('usuarios'); usuarios = r.usuarios || []; }
+  catch (e) { usuarios = []; $('usersBody').innerHTML = '<tr><td colspan="5">' + esc(e.message) + '</td></tr>'; return; }
+  $('usersBody').innerHTML = usuarios.map(u => '<tr><td>' + esc(u.usuario) + (u.trocarSenha ? ' <span class="chip pend">senha provisória</span>' : '') + '</td><td>' + esc(u.nome) + '</td><td>' + (u.perfil === 'admin' ? 'Administrador' : 'Colaborador') + '</td><td>' + (u.ativo === 'sim' ? 'Sim' : 'Não') + '</td><td><button class="btn btn-secondary btn-small" onclick="editarUsuario(\'' + esc(u.usuario) + '\')">Editar</button></td></tr>').join('') || '<tr><td colspan="5">Nenhum colaborador.</td></tr>';
+}
+function editarUsuario(usuario) {
+  const u = usuarios.find(x => x.usuario === usuario); if (!u) return;
+  $('userFormTitle').textContent = 'Editar: ' + u.nome;
+  $('uUsuario').value = u.usuario; $('uUsuario').disabled = true;
+  $('uNome').value = u.nome; $('uPerfil').value = u.perfil; $('uAtivo').checked = u.ativo === 'sim';
+  $('uSenha').value = ''; $('uSenhaHint').textContent = '(deixe em branco para manter)';
+  $('userErrors').classList.remove('show'); $('provisoriaResultado').classList.remove('show');
+  $('btnGerarProvisoria').hidden = (u.usuario === currentUser.usuario);
+  $('uNome').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+async function gerarProvisoria() {
+  const usuario = $('uUsuario').value.trim().toLowerCase(); if (!usuario) return;
+  const btn = $('btnGerarProvisoria'); btn.disabled = true;
+  try {
+    const r = await rpc('senhaProvisoria', { usuario });
+    const texto = 'Relatórios Alfa: sua senha provisória é ' + r.senha + '. Entre com o usuário ' + r.usuario + ' e cadastre a senha definitiva no primeiro acesso.';
+    const box = $('provisoriaResultado');
+    box.innerHTML = 'Senha provisória de <strong>' + esc(r.nome) + '</strong>: <strong style="font-size:20px;letter-spacing:1px">' + esc(r.senha) + '</strong> <button class="btn btn-primary btn-small" id="btnCopiarProv">Copiar mensagem</button><br><span style="font-size:14px">Ela aparece só agora. O colaborador será obrigado a trocar no primeiro acesso.</span>';
+    box.classList.add('show');
+    $('btnCopiarProv').onclick = async () => { try { await navigator.clipboard.writeText(texto); showAlert('successAlert', 'Mensagem copiada.'); } catch (e) { window.prompt('Copie a mensagem:', texto); } };
+    loadUsuarios();
+  } catch (e) { $('userErrorsList').innerHTML = '<li>' + esc(e.message) + '</li>'; $('userErrors').classList.add('show'); }
+  finally { btn.disabled = false; }
+}
+function limparFormUsuario() {
+  $('userFormTitle').textContent = 'Novo colaborador';
+  $('uUsuario').value = ''; $('uUsuario').disabled = false; $('uNome').value = ''; $('uPerfil').value = 'user'; $('uSenha').value = ''; $('uAtivo').checked = true;
+  $('uSenhaHint').textContent = '(obrigatória para novo)'; $('userErrors').classList.remove('show'); $('provisoriaResultado').classList.remove('show');
+  $('btnGerarProvisoria').hidden = true;
+}
+async function salvarUsuario() {
+  const d = { usuario: $('uUsuario').value.trim().toLowerCase(), nome: $('uNome').value.trim(), perfil: $('uPerfil').value, senha: $('uSenha').value, ativo: $('uAtivo').checked };
+  const erros = [];
+  if (!/^[a-z0-9._-]{2,30}$/.test(d.usuario)) erros.push('Usuário: letras minúsculas, números, ponto ou hífen (2 a 30 caracteres)');
+  if (!d.nome) erros.push('Nome');
+  const novo = !$('uUsuario').disabled;
+  if (novo && d.senha.length < 6) erros.push('Senha inicial com pelo menos 6 caracteres');
+  if (!novo && d.senha && d.senha.length < 6) erros.push('Nova senha com pelo menos 6 caracteres');
+  if (erros.length) { $('userErrorsList').innerHTML = erros.map(e => '<li>' + esc(e) + '</li>').join(''); $('userErrors').classList.add('show'); return; }
+  const btn = $('btnSalvarUsuario'); btn.disabled = true;
+  try { const r = await rpc('salvarUsuario', d); showAlert('successAlert', r.provisoria ? 'Colaborador salvo. A senha informada é provisória: ele deverá trocá-la no primeiro acesso.' : 'Colaborador salvo.'); limparFormUsuario(); loadUsuarios(); }
+  catch (e) { $('userErrorsList').innerHTML = '<li>' + esc(e.message) + '</li>'; $('userErrors').classList.add('show'); }
+  finally { btn.disabled = false; }
+}
+
+// ============ TROCAR SENHA ============
+function abrirSenha() { ['senhaAtual', 'senhaNova', 'senhaNova2'].forEach(i => $(i).value = ''); $('senhaErro').classList.remove('show'); $('senhaModal').classList.add('show'); }
+function fecharSenha() { $('senhaModal').classList.remove('show'); }
+async function trocarSenha() {
+  const a = $('senhaAtual').value, n = $('senhaNova').value, n2 = $('senhaNova2').value;
+  if (n.length < 6) return showBanner('senhaErro', 'A nova senha precisa ter pelo menos 6 caracteres.');
+  if (n !== n2) return showBanner('senhaErro', 'As duas senhas novas não conferem.');
+  const btn = $('btnSenha'); btn.disabled = true;
+  try { await rpc('alterarSenha', { senhaAtual: a, novaSenha: n }); fecharSenha(); showAlert('successAlert', 'Senha alterada.'); }
+  catch (e) { showBanner('senhaErro', e.message); }
+  finally { btn.disabled = false; }
+}
+
+// ============ INTERFACE ============
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  $('tab-' + name).classList.add('active');
+  (btn || document.querySelector('[data-tab="' + name + '"]')).classList.add('active');
+  if (name === 'admin') loadAdmin();
+  window.scrollTo({ top: 0 });
+}
+let alertTimer = null;
+function showAlert(id, msg) {
+  document.querySelectorAll('.alert').forEach(a => a.classList.remove('show'));
+  const a = $(id); a.textContent = msg; a.classList.add('show');
+  clearTimeout(alertTimer); alertTimer = setTimeout(() => a.classList.remove('show'), 6000);
+}
+function showBanner(id, msg) { const b = $(id); b.textContent = msg; b.classList.add('show'); }
+
+// ============ INÍCIO ============
+(async function init() {
+  $('reportDate').value = hoje();
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && $('loginPage').style.display !== 'none' && (e.target.id === 'loginUser' || e.target.id === 'loginPass')) handleLogin();
+    if (e.key === 'Escape') { closeModal(); fecharSenha(); }
+    if (e.key === 'Enter' && $('provisoriaModal').classList.contains('show') && e.target.closest('#provisoriaModal')) salvarSenhaDefinitiva();
+  });
+  const token = lsGet('alfa_token'), saved = lsGet('alfa_user');
+  if (token && saved) {
+    currentUser = Object.assign({ token }, saved);
+    $('loginPage').style.display = 'none'; $('mainPage').style.display = 'block';
+    try {
+      const s = await rpc('sessao');
+      currentUser = { usuario: s.usuario, nome: s.nome, perfil: s.perfil, token, planilhaUrl: s.planilhaUrl || '', trocarSenha: !!s.trocarSenha };
+      lsSet('alfa_user', { usuario: s.usuario, nome: s.nome, perfil: s.perfil, planilhaUrl: s.planilhaUrl || '' });
+      showMainPage();
+    } catch (e) {
+      if (e.codigo === 'rede') { showMainPage(); showAlert('errorAlert', 'Sem conexão com o servidor. Você pode preencher e o envio fica guardado.'); }
+      else sessaoExpirada();
+    }
+  }
+})();
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+}
+</script>
+</body>
+</html>
