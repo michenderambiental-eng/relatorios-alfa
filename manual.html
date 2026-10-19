@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Manual do Relatórios Alfa</title>
+<meta name="description" content="Manual do app Relatórios Alfa: cada tela, o que preencher e o que é obrigatório.">
+<meta name="theme-color" content="#007f00">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap">
+<style>
+:root{
+  --verde:#007f00; --verde-escuro:#0b5a1e; --verde-claro:#e4f2e4; --areia:#f3f5ee;
+  --branco:#fff; --tinta:#1e2318; --tinta-2:#5e6753; --toque:#c8102e; --linha:#d7ddca; --amarelo:#fff4d6;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Poppins,system-ui,sans-serif;color:var(--tinta);background:var(--areia);font-size:17px;line-height:1.5}
+img,svg{display:block;max-width:100%}
+a{color:var(--verde-escuro)}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px}
+
+/* capa */
+.capa{background:var(--verde);color:#fff;padding:28px 0 34px}
+.capa .wrap{display:grid;grid-template-columns:1fr;gap:18px}
+.capa .logo{width:112px;height:112px;border-radius:26px;background:#fff;padding:6px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.capa h1{font-size:30px;line-height:1.15;margin:0;font-weight:700;letter-spacing:-.01em}
+.capa p{margin:0;font-size:18px;opacity:.95}
+.selo{display:inline-flex;align-items:center;gap:10px;background:#fff;color:var(--verde-escuro);border-radius:999px;padding:8px 16px 8px 10px;font-weight:600;width:max-content}
+.selo svg{width:28px;height:28px}
+@media (min-width:560px){
+  .capa .wrap{grid-template-columns:112px 1fr;align-items:center;column-gap:22px}
+  .capa .logo{grid-row:1/4;align-self:start}
+  .capa h1,.capa p,.capa .selo{grid-column:2}
+}
+
+/* sumário e legenda */
+.sumario{margin:-22px auto 0;position:relative}
+.sumario .caixa{background:#fff;border-radius:18px;padding:14px 16px;box-shadow:0 8px 24px rgba(30,35,24,.12)}
+.sumario p{margin:0 0 10px;font-weight:600;color:var(--verde-escuro)}
+.sumario nav{display:flex;flex-wrap:wrap;gap:8px}
+.sumario nav a{display:inline-flex;align-items:center;gap:8px;border:2px solid var(--linha);border-radius:999px;padding:6px 14px 6px 8px;text-decoration:none;font-weight:600;font-size:15px;color:var(--tinta)}
+.sumario nav a i{width:24px;height:24px;border-radius:50%;background:var(--verde);color:#fff;font-style:normal;font-size:13px;display:grid;place-items:center}
+.legenda{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin:14px 0 0;font-size:15px;color:var(--tinta-2)}
+.ob,.op{display:inline-block;border-radius:6px;padding:1px 8px;font-size:13px;font-weight:600;vertical-align:middle;white-space:nowrap}
+.ob{background:#fbe3e6;color:var(--toque)}
+.op{background:#eceee6;color:var(--tinta-2)}
+
+/* seções */
+main{padding-bottom:10px}
+section.tela{background:#fff;border-radius:18px;padding:18px 16px;margin:22px 0;scroll-margin-top:12px}
+section.tela h2{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:0 0 4px;font-size:22px;color:var(--verde-escuro);line-height:1.2}
+section.tela h2 .n{width:38px;height:38px;border-radius:50%;background:var(--verde);color:#fff;font-size:18px;font-weight:700;display:grid;place-items:center;flex:none}
+section.tela .sub{margin:0 0 14px;color:var(--tinta-2);font-size:15px}
+.par{display:grid;grid-template-columns:1fr;gap:16px;align-items:start}
+.fone{justify-self:center;width:min(100%,250px);border:5px solid #1e2318;border-radius:26px;overflow:hidden;background:#000;box-shadow:0 10px 26px rgba(30,35,24,.18)}
+.fone img{width:100%}
+.recorte{justify-self:center;width:min(100%,300px);border:1px solid var(--linha);border-radius:12px;overflow:hidden;background:#fff;box-shadow:0 6px 18px rgba(30,35,24,.12)}
+.recorte img{width:100%}
+.texto p{margin:0 0 10px}
+.texto ul{margin:0;padding-left:0;list-style:none}
+.texto li{padding:7px 0;border-top:1px solid var(--linha)}
+.texto li:first-child{border-top:0}
+.texto li b{display:block}
+.texto li small{display:block;color:var(--tinta-2);font-size:15px;line-height:1.4}
+.regra{background:var(--amarelo);border-radius:12px;padding:10px 14px;margin:12px 0 0;font-size:15px}
+.regra b{color:var(--tinta)}
+.ok{background:var(--verde-claro);border-radius:12px;padding:10px 14px;margin:12px 0 0;font-size:15px}
+@media (min-width:600px){
+  .par{grid-template-columns:250px 1fr;gap:22px}
+  .par.largo{grid-template-columns:300px 1fr}
+  .par.inv{grid-template-columns:1fr 250px}
+  .par.inv .fone,.par.inv .recorte{order:2}
+}
+
+/* categorias */
+.cats{display:grid;grid-template-columns:1fr;gap:14px;margin-top:8px}
+.cat{border:2px solid var(--linha);border-radius:14px;padding:12px 14px}
+.cat h3{margin:0 0 8px;font-size:18px;color:var(--verde-escuro)}
+.cat .par{gap:12px}
+@media (min-width:600px){ .cat .par{grid-template-columns:230px 1fr} }
+
+/* tabela resumo */
+.resumo{background:#fff;border-radius:18px;padding:18px 16px;margin:22px 0}
+.resumo h2{margin:0 0 4px;font-size:22px;color:var(--verde-escuro)}
+.resumo .sub{margin:0 0 12px;color:var(--tinta-2);font-size:15px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th,td{text-align:left;padding:8px 8px;border-top:1px solid var(--linha);vertical-align:top}
+th{background:var(--verde-claro);color:var(--verde-escuro);border-top:0}
+td:first-child{font-weight:600;white-space:nowrap}
+.tabela-rolagem{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+/* admin */
+.admin{border:2px solid var(--verde);}
+.admin .tag{display:inline-block;white-space:nowrap;background:var(--verde);color:#fff;border-radius:6px;padding:1px 8px;font-size:13px;font-weight:600;vertical-align:middle;margin-left:6px}
+
+/* rodapé */
+.fim{padding:4px 0 28px;text-align:center}
+.botao{display:inline-block;background:var(--verde);color:#fff;text-decoration:none;font:inherit;font-weight:700;font-size:18px;padding:14px 26px;border-radius:14px;border:0;cursor:pointer;box-shadow:0 6px 18px rgba(0,127,0,.3)}
+.botao.secundario{background:#fff;color:var(--verde-escuro);border:2px solid var(--verde);box-shadow:none;margin:6px}
+.rodape{background:var(--verde-escuro);color:#dfeedf;padding:22px 0 34px;font-size:14px;text-align:center}
+.rodape a{color:#fff}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="capa">
+  <div class="wrap">
+    <img class="logo" src="icons/icon-192.png" alt="Ícone do app Relatórios Alfa" width="112" height="112">
+    <h1>Manual do Relatórios Alfa</h1>
+    <p>Cada tela do app, o que preencher e o que é obrigatório. Para toda a equipe.</p>
+    <span class="selo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16v14H4zM8 9h8M8 13h5"/></svg>Leitura de 5 minutos</span>
+  </div>
+</header>
+
+<div class="wrap sumario">
+  <div class="caixa">
+    <p>O que você procura?</p>
+    <nav>
+      <a href="#entrar"><i>1</i>Entrar</a>
+      <a href="#senha-nova"><i>2</i>Primeira senha</a>
+      <a href="#novo"><i>3</i>Novo relatório</a>
+      <a href="#categorias"><i>4</i>Categorias</a>
+      <a href="#horario"><i>5</i>Horário e fotos</a>
+      <a href="#enviar"><i>6</i>Revisar e enviar</a>
+      <a href="#meus"><i>7</i>Meus relatórios</a>
+      <a href="#sem-sinal"><i>8</i>Sem sinal</a>
+      <a href="#trocar-senha"><i>9</i>Trocar senha</a>
+      <a href="#admin"><i>10</i>Administração</a>
+    </nav>
+    <div class="legenda"><span>Nas telas, o asterisco vermelho <b style="color:#c8102e">*</b> marca campo obrigatório.</span><span><span class="ob">obrigatório</span> o app não envia sem isso</span><span><span class="op">opcional</span> pode deixar em branco</span></div>
+  </div>
+</div>
+
+<main class="wrap">
+
+<section class="tela" id="entrar">
+  <h2><span class="n">1</span>Entrar</h2>
+  <p class="sub">A primeira tela. Depois de entrar uma vez, o app lembra de você por 120 dias.</p>
+  <div class="par">
+    <div class="fone"><img src="telas/01-login.png" alt="Tela de login do app"></div>
+    <div class="texto">
+      <ul>
+        <li><b>Usuário <span class="ob">obrigatório</span></b><small>O seu primeiro nome, em letras minúsculas (ex.: silas). Não tem espaço nem acento.</small></li>
+        <li><b>Senha <span class="ob">obrigatório</span></b><small>No primeiro acesso, a senha provisória que a Alfa mandou. Depois, a sua senha definitiva.</small></li>
+        <li><b>Entrar</b><small>Se aparecer "Usuário ou senha incorretos", confira as letras minúsculas e tente de novo.</small></li>
+      </ul>
+      <div class="regra"><b>Esqueceu a senha?</b> Fale com o Michender ou com a Michelly. Eles geram uma senha provisória na hora.</div>
+    </div>
+  </div>
+</section>
+
+<section class="tela" id="senha-nova">
+  <h2><span class="n">2</span>Primeira vez: cadastre a sua senha</h2>
+  <p class="sub">Toda senha que a Alfa manda é provisória. O app só libera o uso depois que você cria a sua.</p>
+  <div class="par">
+    <div class="fone"><img src="telas/02-primeira-senha.png" alt="Janela Cadastre sua nova senha"></div>
+    <div class="texto">
+      <ul>
+        <li><b>Senha provisória</b><small>Só aparece se você fechou o app antes de trocar. Digite a que recebeu.</small></li>
+        <li><b>Nova senha <span class="ob">obrigatório</span></b><small>Mínimo de 6 caracteres. Tem que ser diferente da provisória. Escolha uma que você não vá esquecer.</small></li>
+        <li><b>Repita a nova senha <span class="ob">obrigatório</span></b><small>Igualzinha à de cima.</small></li>
+        <li><b>Salvar e continuar</b><small>Pronto: a partir daqui o app abre direto na tela de Novo relatório.</small></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="tela" id="novo">
+  <h2><span class="n">3</span>A tela principal: Novo relatório</h2>
+  <p class="sub">É onde você lança o trabalho do dia. Em cima ficam o seu nome, o botão Trocar senha e o Sair. As abas trocam de tela.</p>
+  <div class="par">
+    <div class="fone"><img src="telas/03-novo.png" alt="Tela Novo relatório, com data e categoria"></div>
+    <div class="texto">
+      <ul>
+        <li><b>Abas: Novo e Meus relatórios</b><small>Novo é para lançar. Meus relatórios mostra o que você já enviou. Administradores veem uma terceira aba, Administração.</small></li>
+        <li><b>Data do trabalho <span class="ob">obrigatório</span></b><small>Já vem com a data de hoje. Pode voltar para um dia anterior, se esqueceu de lançar. Não aceita data futura.</small></li>
+        <li><b>Categoria <span class="ob">obrigatório</span></b><small>Escolha o tipo do trabalho: Topografia / Campo, Viveiro de Mudas, Obra, Ibitirama e outros, ou Escritório. Os campos de baixo mudam conforme a categoria (seção 4).</small></li>
+      </ul>
+      <div class="regra"><b>Fez dois tipos de trabalho no mesmo dia?</b> Lance dois relatórios, um de cada categoria.</div>
+    </div>
+  </div>
+</section>
+
+<section class="tela" id="categorias">
+  <h2><span class="n">4</span>Categorias: o que cada uma pede</h2>
+  <p class="sub">Ao escolher a categoria, o app mostra só os campos dela. Os de asterisco vermelho são obrigatórios.</p>
+  <div class="cats">
+
+    <div class="cat">
+      <h3>Topografia / Campo</h3>
+      <div class="par">
+        <div class="recorte"><img src="telas/04-topografia.png" alt="Campos da categoria Topografia / Campo"></div>
+        <div class="texto">
+          <ul>
+            <li><b>Número do processo <span class="ob">obrigatório</span></b><small>No formato ALFA XXXX (ex.: ALFA 3753). Está na pasta e na ordem de serviço.</small></li>
+            <li><b>Cliente / Representante <span class="ob">obrigatório</span></b><small>Quem acompanhou o serviço. Se não houve ninguém, marque "Ninguém acompanhou" e o campo é dispensado.</small></li>
+            <li><b>Descrição do trabalho do dia <span class="ob">obrigatório</span></b><small>O que foi medido, equipamento usado, quantos pontos, dificuldades.</small></li>
+            <li><b>Necessidade de compras ou manutenção <span class="op">opcional</span></b><small>EPI, bateria, insumo, conserto de veículo.</small></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="cat">
+      <h3>Viveiro de Mudas</h3>
+      <div class="par">
+        <div class="recorte"><img src="telas/05-viveiro.png" alt="Campos da categoria Viveiro de Mudas"></div>
+        <div class="texto">
+          <ul>
+            <li><b>Local do viveiro <span class="ob">obrigatório</span></b><small>São Miguel (Cambuí) ou Consolação.</small></li>
+            <li><b>Tirou mudas hoje? <span class="ob">obrigatório</span></b><small>Marque "Sim, tirei mudas" ou "Não tirei mudas". Um dos dois precisa estar marcado.</small></li>
+            <li><b>Quantidade de mudas <span class="ob">obrigatório se tirou</span></b><small>Só aparece quando marca "Sim". Número maior que zero.</small></li>
+            <li><b>Observações e outros trabalhos <span class="op">opcional</span></b><small>Plantio, adubação, capina, irrigação.</small></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="cat">
+      <h3>Obra</h3>
+      <div class="par">
+        <div class="recorte"><img src="telas/06-obra.png" alt="Campos da categoria Obra"></div>
+        <div class="texto">
+          <ul>
+            <li><b>Qual obra? <span class="ob">obrigatório</span></b><small>O nome pelo qual a obra é conhecida (ex.: Casa do Michender).</small></li>
+            <li><b>O que foi feito hoje? <span class="ob">obrigatório</span></b><small>As etapas executadas no dia.</small></li>
+            <li><b>Materiais que precisam ser comprados <span class="op">opcional</span></b><small>Liste com quantidade, para a compra sair certa.</small></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="cat">
+      <h3>Ibitirama e outros</h3>
+      <div class="par">
+        <div class="recorte"><img src="telas/07-ibitirama.png" alt="Campos da categoria Ibitirama e outros"></div>
+        <div class="texto">
+          <ul>
+            <li><b>Onde foi feito o trabalho? <span class="ob">obrigatório</span></b><small>Lote, trecho ou local (ex.: Alto do Ibitirama, Lote 19).</small></li>
+            <li><b>Atividade desenvolvida <span class="ob">obrigatório</span></b><small>Roçada, limpeza, cerca, plantio, manutenção.</small></li>
+            <li><b>Observações complementares <span class="op">opcional</span></b></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="cat">
+      <h3>Escritório</h3>
+      <div class="par">
+        <div class="recorte"><img src="telas/08-escritorio.png" alt="Campos da categoria Escritório"></div>
+        <div class="texto">
+          <ul>
+            <li><b>Descrição do trabalho do dia <span class="ob">obrigatório</span></b><small>Processos trabalhados, documentos feitos, atendimentos, protocolos.</small></li>
+            <li><b>Informações complementares <span class="ob">obrigatório</span></b><small>Pendências, recados, o que ficou para amanhã.</small></li>
+          </ul>
+          <div class="ok"><b>Escritório não pede horário.</b> O horário é o do ponto.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="tela" id="horario">
+  <h2><span class="n">5</span>Horário e fotos</h2>
+  <p class="sub">Ficam embaixo dos campos da categoria. Valem para todas, menos Escritório.</p>
+  <div class="par">
+    <div class="recorte"><img src="telas/09-horario-fotos.png" alt="Campos de hora de início, hora de término e fotos"></div>
+    <div class="texto">
+      <ul>
+        <li><b>Hora de início <span class="ob">obrigatório</span></b><small>Quando o trabalho começou.</small></li>
+        <li><b>Hora de término <span class="ob">obrigatório</span></b><small>Precisa ser depois da hora de início, senão o app avisa.</small></li>
+        <li><b>Fotos do trabalho <span class="op">opcional</span></b><small>Toque em "Adicionar fotos" e escolha da galeria ou tire na hora. Até 6 por relatório. O app reduz o tamanho antes de enviar, para não gastar seus dados. Para tirar uma foto, toque no X dela.</small></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="tela" id="enviar">
+  <h2><span class="n">6</span>Revisar e enviar</h2>
+  <p class="sub">Nada vai para a Alfa sem você conferir antes. São dois toques: Revisar relatório e Confirmar e enviar.</p>
+  <div class="par">
+    <div class="recorte"><img src="telas/10-botoes.png" alt="Botões Revisar relatório e Limpar"></div>
+    <div class="texto">
+      <ul>
+        <li><b>Revisar relatório</b><small>Confere o que você preencheu e monta a prévia.</small></li>
+        <li><b>Limpar</b><small>Apaga tudo o que está na tela e começa de novo. Não tem volta.</small></li>
+      </ul>
+    </div>
+  </div>
+  <div class="par" style="margin-top:16px">
+    <div class="recorte"><img src="telas/11-faltou.png" alt="Aviso Faltou preencher com a lista de campos"></div>
+    <div class="texto">
+      <p><b>Faltou alguma coisa?</b> Aparece a caixa vermelha "Faltou preencher" com a lista do que falta, e o campo fica contornado de vermelho. Preencha e toque em Revisar de novo.</p>
+    </div>
+  </div>
+  <div class="par" style="margin-top:16px">
+    <div class="recorte"><img src="telas/12-confira.png" alt="Prévia Confira antes de enviar"></div>
+    <div class="texto">
+      <ul>
+        <li><b>Confira antes de enviar</b><small>A prévia mostra o relatório pronto, do jeito que a Alfa vai receber.</small></li>
+        <li><b>Confirmar e enviar</b><small>Envia. Aparece "Relatório enviado." e o app pula para Meus relatórios.</small></li>
+        <li><b>Voltar e editar</b><small>Volta para o formulário com tudo preenchido, para corrigir.</small></li>
+      </ul>
+      <div class="ok"><b>Depois de enviado não dá para editar.</b> Se errou, exclua em Meus relatórios e lance de novo.</div>
+    </div>
+  </div>
+</section>
+
+<section class="tela" id="meus">
+  <h2><span class="n">7</span>Meus relatórios</h2>
+  <p class="sub">Tudo o que você enviou nos últimos 40 dias. Os mais antigos continuam guardados na Alfa.</p>
+  <div class="par">
+    <div class="fone"><img src="telas/14-meus.png" alt="Aba Meus relatórios com filtros e cartões"></div>
+    <div class="texto">
+      <ul>
+        <li><b>Filtros</b><small>Por categoria e por mês. Toque em Atualizar para buscar de novo.</small></li>
+        <li><b>Cada cartão é um relatório</b><small>Mostra categoria, data, horário, um resumo e a etiqueta Enviado (ou quantas fotos tem).</small></li>
+        <li><b>Ver</b><small>Abre o relatório completo, com as fotos.</small></li>
+        <li><b>Excluir</b><small>Pede um segundo toque: o botão vira "Confirmar exclusão" por 5 segundos. Se não confirmar, nada acontece.</small></li>
+      </ul>
+    </div>
+  </div>
+  <div class="par" style="margin-top:16px">
+    <div class="fone"><img src="telas/15-detalhe.png" alt="Relatório aberto em detalhe"></div>
+    <div class="texto">
+      <p><b>O relatório aberto</b> mostra todos os campos preenchidos e as fotos. Toque numa foto para abrir em tamanho maior. O X no canto fecha.</p>
+      <div class="recorte" style="width:min(100%,300px);margin-top:10px"><img src="telas/16-excluir.png" alt="Cartão com o botão Confirmar exclusão"></div>
+      <div class="regra"><b>Excluiu sem querer?</b> Avise o Michender: o registro fica guardado na planilha da Alfa, marcado como excluído.</div>
+    </div>
+  </div>
+</section>
+
+<section class="tela" id="sem-sinal">
+  <h2><span class="n">8</span>Sem sinal no campo</h2>
+  <p class="sub">Preencha e envie do mesmo jeito. O app guarda no aparelho e manda sozinho quando o sinal voltar.</p>
+  <div class="par">
+    <div class="fone"><img src="telas/17-sem-sinal.png" alt="Aviso de relatório aguardando envio"></div>
+    <div class="texto">
+      <ul>
+        <li><b>"Sem conexão agora"</b><small>É o aviso de que o relatório ficou guardado no aparelho. Não é erro.</small></li>
+        <li><b>Faixa amarela "aguardando envio"</b><small>Mostra quantos relatórios estão na fila. O botão Enviar agora tenta mandar na hora.</small></li>
+        <li><b>Etiqueta "Aguardando envio"</b><small>No cartão do relatório, até ele subir. Depois vira Enviado.</small></li>
+      </ul>
+      <div class="regra"><b>Não lance de novo.</b> O relatório já está salvo. É só abrir o app quando tiver sinal que ele sobe sozinho.</div>
+    </div>
+  </div>
+</section>
+
+<section class="tela" id="trocar-senha">
+  <h2><span class="n">9</span>Trocar senha</h2>
+  <p class="sub">O link fica embaixo do seu nome, no alto da tela.</p>
+  <div class="par">
+    <div class="fone"><img src="telas/18-trocar-senha.png" alt="Janela Trocar senha"></div>
+    <div class="texto">
+      <ul>
+        <li><b>Senha atual <span class="ob">obrigatório</span></b></li>
+        <li><b>Nova senha <span class="ob">obrigatório</span></b><small>Mínimo de 6 caracteres.</small></li>
+        <li><b>Repita a nova senha <span class="ob">obrigatório</span></b></li>
+        <li><b>Sair</b><small>O botão Sair, ao lado do seu nome, encerra a sessão neste aparelho. Use quando emprestar o celular ou trocar de aparelho.</small></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="tela admin" id="admin">
+  <h2><span class="n">10</span>Administração <span class="tag">só administradores</span></h2>
+  <p class="sub">Michender e Michelly veem a terceira aba. Nela ficam os relatórios de toda a equipe, a exportação e o cadastro de colaboradores.</p>
+  <div class="par">
+    <div class="fone"><img src="telas/19-admin.png" alt="Aba Administração com filtros"></div>
+    <div class="texto">
+      <ul>
+        <li><b>Abrir a planilha no Google</b><small>Leva direto ao banco de dados, onde está tudo, para sempre.</small></li>
+        <li><b>Filtros</b><small>Colaborador, categoria e período (De / Até). Sem filtro, mostra os últimos 180 dias.</small></li>
+        <li><b>Exportar CSV</b><small>Gera o arquivo com os relatórios filtrados e já abre no Excel. O arquivo fica salvo em Relatórios Alfa / Exportações, no Drive.</small></li>
+        <li><b>Cartões</b><small>Iguais aos de Meus relatórios, mas com o nome de quem lançou. Ver e Excluir funcionam do mesmo jeito.</small></li>
+      </ul>
+      <div class="recorte" style="width:min(100%,300px);margin-top:10px"><img src="telas/20-exportar.png" alt="Aviso de CSV gerado com o link Baixar o CSV"></div>
+    </div>
+  </div>
+  <div class="par" style="margin-top:18px">
+    <div class="recorte"><img src="telas/21-colaboradores.png" alt="Tabela de colaboradores"></div>
+    <div class="texto">
+      <p><b>Colaboradores</b> lista todo mundo: usuário, nome, perfil e se está ativo. A etiqueta "senha provisória" avisa quem ainda não cadastrou a senha definitiva. Editar abre o formulário da pessoa.</p>
+    </div>
+  </div>
+  <div class="par" style="margin-top:16px">
+    <div class="recorte"><img src="telas/22-colaborador-form.png" alt="Formulário de colaborador com senha provisória gerada"></div>
+    <div class="texto">
+      <ul>
+        <li><b>Usuário (login) <span class="ob">obrigatório</span></b><small>Letras minúsculas, números, ponto ou hífen; de 2 a 30 caracteres. Depois de criado não muda.</small></li>
+        <li><b>Nome <span class="ob">obrigatório</span></b><small>Como aparece nos relatórios.</small></li>
+        <li><b>Perfil</b><small>Colaborador ou Administrador.</small></li>
+        <li><b>Senha <span class="ob">obrigatório para novo</span></b><small>Mínimo de 6 caracteres. Toda senha definida aqui é provisória: a pessoa troca no primeiro acesso. Ao editar, deixe em branco para manter.</small></li>
+        <li><b>Ativo</b><small>Desmarque para quem saiu. A pessoa não entra mais; os relatórios dela ficam guardados.</small></li>
+        <li><b>Gerar senha provisória</b><small>Para quem esqueceu a senha. Aparece uma senha nova e o botão Copiar mensagem, pronta para o WhatsApp. A senha antiga para de valer na hora.</small></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="resumo" id="resumo">
+  <h2>Resumo: o que é obrigatório em cada categoria</h2>
+  <p class="sub">Data e categoria são sempre obrigatórias. Fotos nunca são.</p>
+  <div class="tabela-rolagem">
+  <table>
+    <thead><tr><th>Categoria</th><th>Obrigatório</th><th>Opcional</th><th>Horário</th></tr></thead>
+    <tbody>
+      <tr><td>Topografia / Campo</td><td>Número do processo (ALFA XXXX); Cliente / Representante (ou "Ninguém acompanhou"); Descrição do trabalho</td><td>Compras ou manutenção</td><td>Sim</td></tr>
+      <tr><td>Viveiro de Mudas</td><td>Local do viveiro; Tirou mudas (sim ou não); Quantidade, se tirou</td><td>Observações e outros trabalhos</td><td>Sim</td></tr>
+      <tr><td>Obra</td><td>Qual obra; O que foi feito</td><td>Materiais a comprar</td><td>Sim</td></tr>
+      <tr><td>Ibitirama e outros</td><td>Onde foi feito; Atividade desenvolvida</td><td>Observações complementares</td><td>Sim</td></tr>
+      <tr><td>Escritório</td><td>Descrição do trabalho; Informações complementares</td><td></td><td>Não</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<section class="fim">
+  <a class="botao secundario" href="./">Abrir o Relatórios Alfa</a>
+  <a class="botao secundario" href="instalar.html">Como instalar</a>
+</section>
+
+</main>
+
+<footer class="rodape">
+  <div class="wrap">Alfa Proteção Ambiental, Topografia e Agrimensura. Cambuí/MG.<br>Link do app: <a href="https://michenderambiental-eng.github.io/relatorios-alfa/">michenderambiental-eng.github.io/relatorios-alfa</a></div>
+</footer>
+
+</body>
+</html>
