@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Como instalar o Relatórios Alfa</title>
+<meta name="description" content="Cartilha de instalação do app Relatórios Alfa no Android, no iPhone e no computador.">
+<meta name="theme-color" content="#007f00">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap">
+<style>
+:root{
+  --verde:#007f00; --verde-escuro:#0b5a1e; --verde-claro:#e4f2e4; --areia:#f3f5ee;
+  --branco:#fff; --tinta:#1e2318; --tinta-2:#5e6753; --marrom:#6b4a1f; --toque:#c8102e; --linha:#d7ddca;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Poppins,system-ui,sans-serif;color:var(--tinta);background:var(--areia);font-size:17px;line-height:1.5}
+img,svg{display:block;max-width:100%}
+a{color:var(--verde-escuro)}
+.wrap{max-width:640px;margin:0 auto;padding:0 16px}
+
+/* capa */
+.capa{background:var(--verde);color:#fff;padding:28px 0 36px}
+.capa .wrap{display:grid;grid-template-columns:1fr;gap:18px}
+.capa .logo{width:112px;height:112px;border-radius:26px;background:#fff;padding:6px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.capa h1{font-size:30px;line-height:1.15;margin:0;font-weight:700;letter-spacing:-.01em}
+.capa p{margin:0;font-size:18px;opacity:.95}
+.tempo{display:inline-flex;align-items:center;gap:10px;background:#fff;color:var(--verde-escuro);border-radius:999px;padding:8px 16px 8px 10px;font-weight:600;width:max-content}
+.tempo svg{width:28px;height:28px}
+
+/* escolha do aparelho */
+.escolha{margin:-22px auto 0;position:relative}
+.escolha .caixa{background:#fff;border-radius:18px;padding:14px;box-shadow:0 8px 24px rgba(30,35,24,.12)}
+.escolha p{margin:0 0 10px;font-weight:600;color:var(--verde-escuro)}
+.abas{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.aba{border:2px solid var(--linha);background:#fff;border-radius:14px;padding:10px 6px;font:inherit;font-weight:600;font-size:15px;color:var(--tinta-2);cursor:pointer;display:grid;justify-items:center;gap:6px}
+.aba svg{width:34px;height:34px}
+.aba[aria-selected="true"]{border-color:var(--verde);color:var(--verde-escuro);background:var(--verde-claro)}
+.aba:focus-visible{outline:3px solid var(--toque);outline-offset:2px}
+
+/* passos */
+section.guia{display:none;padding:28px 0 8px}
+section.guia.ativa{display:block}
+.passo{display:grid;grid-template-columns:1fr;gap:12px;align-items:center;padding:18px 0;border-top:1px solid var(--linha)}
+.passo:first-of-type{border-top:0;padding-top:4px}
+.passo .num{width:40px;height:40px;border-radius:50%;background:var(--verde);color:#fff;font-weight:700;font-size:20px;display:grid;place-items:center;flex:none}
+.passo .texto{display:flex;gap:12px;align-items:flex-start}
+.passo .texto p{margin:0;font-size:18px;line-height:1.4}
+.passo .texto small{display:block;color:var(--tinta-2);font-size:15px;margin-top:4px}
+.passo .tela{justify-self:center;width:min(100%,300px)}
+@media (min-width:560px){
+  .passo{grid-template-columns:1fr 220px;gap:22px}
+  .passo .tela{width:220px}
+  #pc .passo{grid-template-columns:1fr 300px}
+  #pc .passo .tela{width:300px}
+  .capa .wrap{grid-template-columns:112px 1fr;align-items:center}
+  .capa h1{grid-column:2}
+}
+.legenda{display:flex;align-items:center;gap:8px;color:var(--tinta-2);font-size:15px;margin:8px 0 0}
+.legenda i{width:14px;height:14px;border-radius:50%;background:var(--toque);display:inline-block;box-shadow:0 0 0 4px rgba(200,16,46,.2)}
+
+/* animação do toque: um ciclo só, repetido devagar */
+.toque{fill:var(--toque);transform-origin:center;animation:pulso 2.4s ease-in-out infinite}
+.toque-halo{fill:none;stroke:var(--toque);stroke-width:2;opacity:.6;transform-origin:center;animation:halo 2.4s ease-out infinite}
+@keyframes pulso{0%,100%{transform:scale(1)}40%{transform:scale(.72)}60%{transform:scale(1.1)}}
+@keyframes halo{0%{transform:scale(.6);opacity:.7}70%{transform:scale(2.2);opacity:0}100%{opacity:0}}
+.menu-anim{animation:aparece 2.4s ease-in-out infinite}
+@keyframes aparece{0%,35%{opacity:0;transform:translateY(6px)}55%,100%{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.toque,.toque-halo,.menu-anim{animation:none}.menu-anim{opacity:1}}
+
+/* botão instalar agora */
+.agora{background:var(--verde-claro);border-radius:18px;padding:18px;margin:8px 0 10px;text-align:center}
+.agora p{margin:0 0 12px;color:var(--verde-escuro);font-weight:600}
+.botao{display:inline-block;background:var(--verde);color:#fff;text-decoration:none;font:inherit;font-weight:700;font-size:18px;padding:14px 26px;border-radius:14px;border:0;cursor:pointer;box-shadow:0 6px 18px rgba(0,127,0,.3)}
+.botao.secundario{background:#fff;color:var(--verde-escuro);border:2px solid var(--verde);box-shadow:none}
+.botao:focus-visible{outline:3px solid var(--toque);outline-offset:2px}
+
+/* esquema */
+.esquema{background:#fff;border-radius:18px;padding:20px 16px;margin:24px 0}
+.esquema h2{margin:0 0 6px;font-size:21px;color:var(--verde-escuro)}
+.esquema p{margin:0 0 14px;color:var(--tinta-2);font-size:15px}
+.fluxo{display:grid;grid-template-columns:1fr;gap:0}
+.etapa{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;padding:10px 0;position:relative}
+.etapa + .etapa::before{content:"";position:absolute;left:27px;top:-14px;width:2px;height:24px;background:var(--verde);opacity:.5}
+.etapa .ic{width:56px;height:56px;border-radius:16px;background:var(--verde-claro);display:grid;place-items:center}
+.etapa .ic svg{width:32px;height:32px}
+.etapa b{display:block;font-size:17px;color:var(--tinta)}
+.etapa span{color:var(--tinta-2);font-size:15px}
+
+/* dicas e rodapé */
+.dicas{padding:4px 0 28px}
+.dicas h2{font-size:21px;color:var(--verde-escuro);margin:16px 0 8px}
+.dicas ul{margin:0;padding-left:22px}
+.dicas li{margin:6px 0}
+.rodape{background:var(--verde-escuro);color:#dfeedf;padding:22px 0 34px;font-size:14px;text-align:center}
+.rodape a{color:#fff}
+</style>
+</head>
+<body>
+
+<header class="capa">
+  <div class="wrap">
+    <img class="logo" src="icons/icon-192.png" alt="Ícone do app Relatórios Alfa" width="112" height="112">
+    <h1>Como instalar o Relatórios Alfa no seu aparelho</h1>
+    <p>Não precisa de loja, nem de conta Google. É só abrir o link e seguir os passos.</p>
+    <span class="tempo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg>Leva 1 minuto</span>
+  </div>
+</header>
+
+<div class="wrap escolha">
+  <div class="caixa">
+    <p>Qual é o seu aparelho?</p>
+    <div class="abas" role="tablist">
+      <button class="aba" role="tab" id="aba-android" aria-controls="android" aria-selected="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M10 18h4"/></svg>Android
+      </button>
+      <button class="aba" role="tab" id="aba-iphone" aria-controls="iphone" aria-selected="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M9.5 3.5h5"/></svg>iPhone
+      </button>
+      <button class="aba" role="tab" id="aba-pc" aria-controls="pc" aria-selected="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Computador
+      </button>
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+
+<!-- ANDROID -->
+<section class="guia" id="android" role="tabpanel" aria-labelledby="aba-android">
+  <div class="agora" id="agora-android" hidden>
+    <p>Seu Chrome permite instalar com um toque:</p>
+    <button class="botao" id="btn-instalar">Instalar agora</button>
+  </div>
+  <div class="passo">
+    <div class="texto"><span class="num">1</span><p>Abra o link no Chrome.<small>Se abrir dentro do WhatsApp, toque nos três pontos e escolha "Abrir no Chrome".</small></p></div>
+    <svg class="tela" viewBox="0 0 220 300" aria-hidden="true">
+      <rect x="10" y="4" width="200" height="292" rx="22" fill="#1e2318"/><rect x="18" y="12" width="184" height="276" rx="16" fill="#fff"/>
+      <rect x="18" y="12" width="184" height="30" rx="16" fill="#eef1ea"/><rect x="18" y="26" width="184" height="16" fill="#eef1ea"/>
+      <rect x="28" y="19" width="140" height="16" rx="8" fill="#fff"/><text x="36" y="31" font-size="8" fill="#5e6753" font-family="Poppins,sans-serif">michenderambiental-eng.github.io</text>
+      <circle cx="186" cy="24" r="1.6" fill="#1e2318"/><circle cx="186" cy="29" r="1.6" fill="#1e2318"/><circle cx="186" cy="34" r="1.6" fill="#1e2318"/>
+      <image href="icons/icon-192.png" x="80" y="70" width="60" height="60"/>
+      <text x="110" y="150" text-anchor="middle" font-size="11" font-weight="700" fill="#6b4a1f" font-family="Poppins,sans-serif">Relatórios de Trabalho</text>
+      <rect x="40" y="170" width="140" height="22" rx="6" fill="#fff" stroke="#d7ddca"/><text x="48" y="185" font-size="8" fill="#9aa08f" font-family="Poppins,sans-serif">seu primeiro nome</text>
+      <rect x="40" y="200" width="140" height="22" rx="6" fill="#fff" stroke="#d7ddca"/><text x="48" y="215" font-size="8" fill="#9aa08f" font-family="Poppins,sans-serif">sua senha</text>
+      <rect x="40" y="232" width="140" height="24" rx="8" fill="#7ba428"/><text x="110" y="248" text-anchor="middle" font-size="10" font-weight="700" fill="#fff" font-family="Poppins,sans-serif">Entrar</text>
+    </svg>
+  </div>
+  <div class="passo">
+    <div class="texto"><span class="num">2</span><p>Toque nos três pontos, no canto de cima.</p></div>
+    <svg class="tela" viewBox="0 0 220 300" aria-hidden="true">
+      <rect x="10" y="4" width="200" height="292" rx="22" fill="#1e2318"/><rect x="18" y="12" width="184" height="276" rx="16" fill="#fff"/>
+      <rect x="18" y="12" width="184" height="30" rx="16" fill="#eef1ea"/><rect x="18" y="26" width="184" height="16" fill="#eef1ea"/>
+      <rect x="28" y="19" width="140" height="16" rx="8" fill="#fff"/><text x="36" y="31" font-size="8" fill="#5e6753" font-family="Poppins,sans-serif">michenderambiental-eng.github.io</text>
+      <circle cx="186" cy="24" r="1.6" fill="#1e2318"/><circle cx="186" cy="29" r="1.6" fill="#1e2318"/><circle cx="186" cy="34" r="1.6" fill="#1e2318"/>
+      <image href="icons/icon-192.png" x="80" y="70" width="60" height="60" opacity=".35"/>
+      <circle class="toque-halo" cx="186" cy="29" r="9"/><circle class="toque" cx="186" cy="29" r="9" opacity=".85"/>
+    </svg>
+  </div>
+  <div class="passo">
+    <div class="texto"><span class="num">3</span><p>Toque em <b>Instalar app</b>.<small>Em alguns aparelhos o nome é "Adicionar à tela inicial". Se aparecer um aviso "Instalar app" embaixo da tela, pode tocar nele direto.</small></p></div>
+    <svg class="tela" viewBox="0 0 220 300" aria-hidden="true">
+      <rect x="10" y="4" width="200" height="292" rx="22" fill="#1e2318"/><rect x="18" y="12" width="184" height="276" rx="16" fill="#fff"/>
+      <rect x="18" y="12" width="184" height="30" rx="16" fill="#eef1ea"/><rect x="18" y="26" width="184" height="16" fill="#eef1ea"/>
+      <rect x="28" y="19" width="140" height="16" rx="8" fill="#fff"/>
+      <circle cx="186" cy="24" r="1.6" fill="#1e2318"/><circle cx="186" cy="29" r="1.6" fill="#1e2318"/><circle cx="186" cy="34" r="1.6" fill="#1e2318"/>
+      <g class="menu-anim">
+        <rect x="62" y="44" width="136" height="150" rx="10" fill="#fff" stroke="#d7ddca"/>
+        <text x="74" y="66" font-size="9" fill="#1e2318" font-family="Poppins,sans-serif">Nova guia</text>
+        <text x="74" y="86" font-size="9" fill="#1e2318" font-family="Poppins,sans-serif">Nova guia anônima</text>
+        <text x="74" y="106" font-size="9" fill="#1e2318" font-family="Poppins,sans-serif">Histórico</text>
+        <text x="74" y="126" font-size="9" fill="#1e2318" font-family="Poppins,sans-serif">Transferências</text>
+        <text x="74" y="146" font-size="9" fill="#1e2318" font-family="Poppins,sans-serif">Favoritos</text>
+        <rect x="66" y="156" width="128" height="22" rx="6" fill="#e4f2e4"/>
+        <text x="74" y="171" font-size="9" font-weight="700" fill="#0b5a1e" font-family="Poppins,sans-serif">Instalar app</text>
+        <circle class="toque-halo" cx="178" cy="167" r="9"/><circle class="toque" cx="178" cy="167" r="9" opacity=".85"/>
+      </g>
+    </svg>
+  </div>
+  <div class="passo">
+    <div class="texto"><span class="num">4</span><p>Confirme em <b>Instalar</b>. Pronto: o ícone aparece junto dos seus aplicativos.</p></div>
+    <svg class="tela" viewBox="0 0 220 300" aria-hidden="true">
+      <rect x="10" y="4" width="200" height="292" rx="22" fill="#1e2318"/><rect x="18" y="12" width="184" height="276" rx="16" fill="#cfe3cf"/>
+      <g fill="#fff" opacity=".9"><rect x="34" y="40" width="34" height="34" rx="9"/><rect x="92" y="40" width="34" height="34" rx="9"/><rect x="150" y="40" width="34" height="34" rx="9"/><rect x="34" y="100" width="34" height="34" rx="9"/><rect x="150" y="100" width="34" height="34" rx="9"/></g>
+      <image href="icons/icon-192.png" x="88" y="96" width="42" height="42"/>
+      <text x="109" y="152" text-anchor="middle" font-size="8" fill="#1e2318" font-family="Poppins,sans-serif">Relatórios</text>
+      <circle class="toque-halo" cx="109" cy="117" r="12"/>
+    </svg>
+  </div>
+  <p class="legenda"><i></i> O ponto vermelho mostra onde tocar.</p>
+</section>
+
+<!-- IPHONE -->
+<section class="guia" id="iphone" role="tabpanel" aria-labelledby="aba-iphone">
+  <div class="passo">
+    <div class="texto"><span class="num">1</span><p>Abra o link no <b>Safari</b>.<small>Tem que ser o Safari. Se o link abrir em outro navegador, copie o endereço e cole no Safari.</small></p></div>
+    <svg class="tela" viewBox="0 0 220 300" aria-hidden="true">
+      <rect x="10" y="4" width="200" height="292" rx="28" fill="#1e2318"/><rect x="18" y="12" width="184" height="276" rx="22" fill="#fff"/>
+      <image href="icons/icon-192.png" x="80" y="60" width="60" height="60"/>
+      <text x="110" y="140" text-anchor="middle" font-size="11" font-weight="700" fill="#6b4a1f" font-family="Poppins,sans-serif">Relatórios de Trabalho</text>
+      <rect x="40" y="160" width="140" height="22" rx="6" fill="#fff" stroke="#d7ddca"/><rect x="40" y="190" width="140" height="22" rx="6" fill="#fff" stroke="#d7ddca"/>
+      <rect x="40" y="222" width="140" height="24" rx="8" fill="#7ba428"/><text x="110" y="238" text-anchor="middle" font-size="10" font-weight="700" fill="#fff" font-family="Poppins,sans-serif">Entrar</text>
+      <rect x="18" y="254" width="184" height="34" rx="0" fill="#f3f3f3"/><rect x="18" y="270" width="184" height="18" fill="#f3f3f3"/>
+      <rect x="40" y="259" width="140" height="18" rx="9" fill="#fff" stroke="#ddd"/><text x="110" y="271" text-anchor="middle" font-size="7.5" fill="#5e6753" font-family="Poppins,sans-serif">michenderambiental-eng.github.io</text>
+    </svg>
+  </div>
+  <div class="passo">
+    <div class="texto"><span class="num">2</span><p>Toque no botão <b>Compartilhar</b> (o quadrado com a seta para cima).</p></div>
+    <svg class="tela" viewBox="0 0 220 300" aria-hidden="true">
+      <rect x="10" y="4" width="200" height="292" rx="28" fill="#1e2318"/><rect x="18" y="12" width="184" height="276" rx="22" fill="#fff"/>
+      <image href="icons/icon-192.png" x="80" y="60" width="60" height="60" opacity=".35"/>
+      <rect x="18" y="232" width="184" height="56" fill="#f3f3f3"/>
+      <rect x="40" y="238" width="140" height="18" rx="9" fill="#fff" stroke="#ddd"/>
+      <g stroke="#2b6cb0" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M50 277l-5-5 5-5"/><path d="M76 277l5-5-5-5"/>
+        <path d="M104 272v8h14v-8"/><path d="M111 262v12M107 266l4-4 4 4"/>
+        <path d="M142 267h10v12h-10zM147 267v12"/>
+        <rect x="170" y="267" width="11" height="11" rx="2"/><path d="M173 264h11v11"/>
+      </g>
+      <circle class="toque-halo" cx="111" cy="272" r="10"/><circle class="toque" cx="111" cy="272" r="9" opacity=".8"/>
+    </svg>
+  </div>
+  <div class="passo">
+    <div class="texto"><span class="num">3</span><p>Role a lista e toque em <b>Adicionar à Tela de Início</b>.</p></div>
+    <svg class="tela" viewBox="0 0 220 300" aria-hidden="true">
+      <rect x="10" y="4" width="200" height="292" rx="28" fill="#1e2318"/><rect x="18" y="12" width="184" height="276" rx="22" fill="#fff"/>
+      <image href="icons/icon-192.png" x="80" y="30" width="44" height="44" opacity=".3"/>
+      <g class="menu-anim">
+        <rect x="18" y="96" width="184" height="192" rx="16" fill="#f7f7f7" stroke="#ddd"/>
+        <rect x="98" y="102" width="24" height="3" rx="1.5" fill="#ccc"/>
+        <g font-size="9" fill="#1e2318" font-family="Poppins,sans-serif">
+          <text x="34" y="128">Copiar</text><text x="34" y="150">Adicionar à Lista de Leitura</text><text x="34" y="172">Adicionar aos Favoritos</text>
+          <rect x="26" y="182" width="168" height="24" rx="8" fill="#e4f2e4"/>
+          <text x="34" y="198" font-weight="700" fill="#0b5a1e">Adicionar à Tela de Início</text>
+          <text x="34" y="224">Marcar</text><text x="34" y="246">Imprimir</text>
+        </g>
+        <circle class="toque-halo" cx="178" cy="194" r="9"/><circle class="toque" cx="178" cy="194" r="9" opacity=".85"/>
+      </g>
+    </svg>
+  </div>
+  <div class="passo">
+    <div class="texto"><span class="num">4</span><p>Toque em <b>Adicionar</b>, no canto de cima à direita. Pronto: o ícone aparece na tela de início.</p></div>
+    <svg class="tela" viewBox="0 0 220 300" aria-hidden="true">
+      <rect x="10" y="4" width="200" height="292" rx="28" fill="#1e2318"/><rect x="18" y="12" width="184" height="276" rx="22" fill="#fff"/>
+      <text x="34" y="34" font-size="9" fill="#2b6cb0" font-family="Poppins,sans-serif">Cancelar</text>
+      <text x="110" y="34" text-anchor="middle" font-size="9" font-weight="700" fill="#1e2318" font-family="Poppins,sans-serif">Tela de Início</text>
+      <text x="186" y="34" text-anchor="end" font-size="9" font-weight="700" fill="#2b6cb0" font-family="Poppins,sans-serif">Adicionar</text>
+      <circle class="toque-halo" cx="170" cy="31" r="9"/><circle class="toque" cx="170" cy="31" r="9" opacity=".85"/>
+      <rect x="30" y="54" width="160" height="40" rx="10" fill="#f3f3f3"/>
+      <image href="icons/icon-192.png" x="38" y="60" width="28" height="28"/>
+      <text x="74" y="78" font-size="9" fill="#1e2318" font-family="Poppins,sans-serif">Relatórios Alfa</text>
+      <g fill="#fff" stroke="#ddd"><rect x="34" y="140" width="34" height="34" rx="9"/><rect x="92" y="140" width="34" height="34" rx="9"/><rect x="150" y="140" width="34" height="34" rx="9"/></g>
+      <image href="icons/icon-192.png" x="34" y="196" width="34" height="34"/>
+      <text x="51" y="242" text-anchor="middle" font-size="7" fill="#1e2318" font-family="Poppins,sans-serif">Relatórios</text>
+    </svg>
+  </div>
+  <p class="legenda"><i></i> O ponto vermelho mostra onde tocar.</p>
+</section>
+
+<!-- PC -->
+<section class="guia" id="pc" role="tabpanel" aria-labelledby="aba-pc">
+  <div class="agora" id="agora-pc" hidden>
+    <p>Seu navegador permite instalar com um clique:</p>
+    <button class="botao" id="btn-instalar-pc">Instalar agora</button>
+  </div>
+  <div class="passo">
+    <div class="texto"><span class="num">1</span><p>Abra o link no <b>Chrome</b> ou no <b>Edge</b>.</p></div>
+    <svg class="tela" viewBox="0 0 300 200" aria-hidden="true">
+      <rect x="4" y="4" width="292" height="192" rx="10" fill="#1e2318"/><rect x="10" y="10" width="280" height="180" rx="6" fill="#fff"/>
+      <rect x="10" y="10" width="280" height="30" fill="#eef1ea"/>
+      <circle cx="22" cy="25" r="3" fill="#c8102e"/><circle cx="32" cy="25" r="3" fill="#e0a800"/><circle cx="42" cy="25" r="3" fill="#2e9e44"/>
+      <rect x="56" y="17" width="206" height="16" rx="8" fill="#fff"/><text x="64" y="28" font-size="7.5" fill="#5e6753" font-family="Poppins,sans-serif">michenderambiental-eng.github.io/relatorios-alfa/</text>
+      <image href="icons/icon-192.png" x="125" y="60" width="50" height="50"/>
+      <text x="150" y="130" text-anchor="middle" font-size="10" font-weight="700" fill="#6b4a1f" font-family="Poppins,sans-serif">Relatórios de Trabalho</text>
+      <rect x="95" y="142" width="110" height="14" rx="4" fill="#fff" stroke="#d7ddca"/><rect x="95" y="162" width="110" height="14" rx="4" fill="#7ba428"/>
+    </svg>
+  </div>
+  <div class="passo">
+    <div class="texto"><span class="num">2</span><p>Clique no ícone de instalar, na ponta direita da barra de endereço.<small>É um pequeno monitor com uma seta para baixo.</small></p></div>
+    <svg class="tela" viewBox="0 0 300 200" aria-hidden="true">
+      <rect x="4" y="4" width="292" height="192" rx="10" fill="#1e2318"/><rect x="10" y="10" width="280" height="180" rx="6" fill="#fff"/>
+      <rect x="10" y="10" width="280" height="30" fill="#eef1ea"/>
+      <rect x="56" y="17" width="206" height="16" rx="8" fill="#fff"/><text x="64" y="28" font-size="7.5" fill="#5e6753" font-family="Poppins,sans-serif">michenderambiental-eng.github.io/relatorios-alfa/</text>
+      <g stroke="#0b5a1e" stroke-width="1.6" fill="none"><rect x="244" y="20" width="12" height="8" rx="1"/><path d="M250 15v6M247.5 18.5l2.5 2.5 2.5-2.5"/></g>
+      <circle class="toque-halo" cx="250" cy="24" r="9"/><circle class="toque" cx="250" cy="24" r="8" opacity=".8"/>
+      <g class="menu-anim">
+        <rect x="150" y="46" width="128" height="52" rx="8" fill="#fff" stroke="#d7ddca"/>
+        <text x="160" y="64" font-size="8" font-weight="700" fill="#1e2318" font-family="Poppins,sans-serif">Instalar app?</text>
+        <text x="160" y="76" font-size="7.5" fill="#5e6753" font-family="Poppins,sans-serif">Relatórios Alfa</text>
+        <rect x="222" y="80" width="48" height="13" rx="4" fill="#007f00"/><text x="246" y="89.5" text-anchor="middle" font-size="7.5" font-weight="700" fill="#fff" font-family="Poppins,sans-serif">Instalar</text>
+      </g>
+    </svg>
+  </div>
+  <div class="passo">
+    <div class="texto"><span class="num">3</span><p>Clique em <b>Instalar</b>. O app ganha atalho na área de trabalho e abre em janela própria.<small>Se o ícone não aparecer na barra: Chrome, três pontos, "Transmitir, salvar e compartilhar", "Instalar página como app". Edge, três pontos, "Aplicativos", "Instalar este site como um aplicativo".</small></p></div>
+    <svg class="tela" viewBox="0 0 300 200" aria-hidden="true">
+      <rect x="4" y="4" width="292" height="192" rx="10" fill="#1e2318"/><rect x="10" y="10" width="280" height="180" rx="6" fill="#2b5fb3"/>
+      <image href="icons/icon-192.png" x="28" y="26" width="40" height="40"/>
+      <text x="48" y="80" text-anchor="middle" font-size="7.5" fill="#fff" font-family="Poppins,sans-serif">Relatórios Alfa</text>
+      <g fill="#fff" opacity=".85"><rect x="28" y="96" width="40" height="40" rx="8"/><rect x="88" y="26" width="40" height="40" rx="8"/></g>
+      <rect x="10" y="176" width="280" height="14" fill="#1e2318" opacity=".5"/>
+      <circle class="toque-halo" cx="48" cy="46" r="14"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ESQUEMA -->
+<div class="esquema" id="esquema">
+  <h2>Depois de instalar: o caminho até o primeiro relatório</h2>
+  <p>Vale igual no celular e no computador.</p>
+  <div class="fluxo">
+    <div class="etapa"><div class="ic"><img src="icons/icon-192.png" alt="" width="36" height="36" style="border-radius:9px"></div><div><b>Toque no ícone Relatórios Alfa</b><span>Abre em tela cheia, como qualquer app.</span></div></div>
+    <div class="etapa"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#0b5a1e" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg></div><div><b>Entre com usuário e senha provisória</b><span>Usuário: seu primeiro nome, em minúsculas. Senha: a que a Alfa mandou.</span></div></div>
+    <div class="etapa"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#0b5a1e" stroke-width="2"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div><div><b>Cadastre a sua senha definitiva</b><span>O app pede na primeira vez. Mínimo de 6 caracteres. Guarde bem.</span></div></div>
+    <div class="etapa"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#0b5a1e" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg></div><div><b>Pronto para lançar o relatório do dia</b><span>O login fica guardado por 120 dias; não precisa digitar a senha todo dia.</span></div></div>
+  </div>
+</div>
+
+<section class="dicas">
+  <h2>Bom saber</h2>
+  <ul>
+    <li><b>Sem sinal no campo?</b> Preencha e envie normalmente. O relatório fica guardado no aparelho e sobe sozinho quando o sinal voltar.</li>
+    <li><b>Fotos nunca são obrigatórias.</b> Quando houver, até 6 por relatório; o app reduz o tamanho antes de enviar.</li>
+    <li><b>Esqueceu a senha?</b> Fale com o Michender ou com a Michelly. Eles mandam uma senha provisória e você cadastra a definitiva na hora.</li>
+    <li><b>Atualizações</b> chegam sozinhas. Nunca precisa instalar de novo.</li>
+  </ul>
+  <p style="text-align:center;margin:22px 0 0"><a class="botao secundario" href="./">Abrir o Relatórios Alfa</a></p>
+</section>
+
+</main>
+
+<footer class="rodape">
+  <div class="wrap">Alfa Proteção Ambiental, Topografia e Agrimensura. Cambuí/MG.<br>Link do app: <a href="https://michenderambiental-eng.github.io/relatorios-alfa/">michenderambiental-eng.github.io/relatorios-alfa</a></div>
+</footer>
+
+<script>
+(function () {
+  var abas = Array.prototype.slice.call(document.querySelectorAll('.aba'));
+  var paineis = Array.prototype.slice.call(document.querySelectorAll('.guia'));
+  function mostrar(id, rolar) {
+    abas.forEach(function (a) { a.setAttribute('aria-selected', a.getAttribute('aria-controls') === id ? 'true' : 'false'); });
+    paineis.forEach(function (p) { p.classList.toggle('ativa', p.id === id); });
+    try { history.replaceState(null, '', '#' + id); } catch (e) {}
+    if (rolar) { var el = document.getElementById(id); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  }
+  abas.forEach(function (a) { a.addEventListener('click', function () { mostrar(a.getAttribute('aria-controls'), true); }); });
+  var ua = navigator.userAgent || '';
+  var inicial = location.hash.replace('#', '');
+  if (['android', 'iphone', 'pc'].indexOf(inicial) < 0) inicial = /iPhone|iPad|iPod/i.test(ua) ? 'iphone' : (/Android/i.test(ua) ? 'android' : 'pc');
+  mostrar(inicial, false);
+
+  // Instalação direta quando o navegador oferece (Chrome no Android e no computador, Edge).
+  var pedido = null;
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault(); pedido = e;
+    ['agora-android', 'agora-pc'].forEach(function (id) { var el = document.getElementById(id); if (el) el.hidden = false; });
+  });
+  function instalar() {
+    if (!pedido) return;
+    pedido.prompt();
+    pedido.userChoice.then(function () { pedido = null; ['agora-android', 'agora-pc'].forEach(function (id) { var el = document.getElementById(id); if (el) el.hidden = true; }); });
+  }
+  var b1 = document.getElementById('btn-instalar'), b2 = document.getElementById('btn-instalar-pc');
+  if (b1) b1.addEventListener('click', instalar);
+  if (b2) b2.addEventListener('click', instalar);
+  window.addEventListener('appinstalled', function () { ['agora-android', 'agora-pc'].forEach(function (id) { var el = document.getElementById(id); if (el) el.hidden = true; }); });
+})();
+</script>
+</body>
+</html>
