@@ -57,8 +57,9 @@ section.guia.ativa{display:block}
   .passo .tela{width:220px}
   #pc .passo{grid-template-columns:1fr 300px}
   #pc .passo .tela{width:300px}
-  .capa .wrap{grid-template-columns:112px 1fr;align-items:center}
-  .capa h1{grid-column:2}
+  .capa .wrap{grid-template-columns:112px 1fr;align-items:center;column-gap:22px}
+  .capa .logo{grid-row:1/4;align-self:start}
+  .capa h1,.capa p,.capa .tempo{grid-column:2}
 }
 .legenda{display:flex;align-items:center;gap:8px;color:var(--tinta-2);font-size:15px;margin:8px 0 0}
 .legenda i{width:14px;height:14px;border-radius:50%;background:var(--toque);display:inline-block;box-shadow:0 0 0 4px rgba(200,16,46,.2)}
